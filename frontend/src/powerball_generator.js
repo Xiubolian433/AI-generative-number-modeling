@@ -7,7 +7,7 @@ import {
   consumeStoredCredit,
   getStoredAccessCode,
   getStoredCredits,
-  setPaidCreditsOnly,
+  setServerSyncedCredits,
 } from "./credits"
 
 function PowerBallGenerator({ onCreditsUpdate }) {
@@ -35,7 +35,7 @@ function PowerBallGenerator({ onCreditsUpdate }) {
       if (response.data.valid) {
         const realCredits = response.data.remaining_credits
         setRemainingCredits(realCredits)
-        setPaidCreditsOnly(realCredits)
+        setServerSyncedCredits(realCredits)
         return realCredits
       } else {
         const { totalCredits } = getStoredCredits()
@@ -67,7 +67,7 @@ function PowerBallGenerator({ onCreditsUpdate }) {
       if (response.data.success) {
         const newCredits = response.data.remaining_credits
         setRemainingCredits(newCredits)
-        setPaidCreditsOnly(newCredits)
+        setServerSyncedCredits(newCredits)
         if (onCreditsUpdate) onCreditsUpdate()
         return true
       } else {

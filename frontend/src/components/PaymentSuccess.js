@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useSearchParams, useNavigate } from "react-router-dom"
 import "./PaymentSuccess.css"
 import { API } from "../api"
-import { getStoredCredits, setPaidCreditsOnly, setStoredAccessCode } from "../credits"
+import { setServerSyncedCredits, setStoredAccessCode } from "../credits"
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams()
@@ -59,15 +59,21 @@ const PaymentSuccess = () => {
         console.log("Execute payment response:", data)
 
         if (response.status === 200 && data.success) {
-          const { paidCredits: currentPaidCredits } = getStoredCredits()
-          const newPaidCredits = currentPaidCredits + (data.credits || 0)
-
-          setPaidCreditsOnly(newPaidCredits)
           setStoredAccessCode(data.access_code)
+
+          const verificationResponse = await API.post("/api/credits/verify", {
+            access_code: data.access_code,
+          })
+
+          const remainingCredits = verificationResponse.data.valid
+            ? verificationResponse.data.remaining_credits
+            : data.credits || 0
+
+          setServerSyncedCredits(remainingCredits)
 
           setResult({
             success: true,
-            credits: data.credits,
+            credits: remainingCredits,
             accessCode: data.access_code,
             message: data.message,
           })

@@ -17,8 +17,9 @@ import PaymentCancel from "./components/PaymentCancel"
 import { API_BASE_URL } from "./api"
 import {
   getStoredCredits,
+  getStoredAccessCode,
   initializeCreditsIfNeeded,
-  setPaidCreditsOnly,
+  setServerSyncedCredits,
   setStoredAccessCode,
   subscribeToCreditsUpdated,
 } from "./credits"
@@ -41,6 +42,35 @@ function App() {
 
     initializeCreditsIfNeeded()
     updateTotalCredits()
+
+    const syncCreditsFromBackend = async () => {
+      const accessCode = getStoredAccessCode()
+      if (!accessCode) {
+        updateTotalCredits()
+        return
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/credits/verify`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            access_code: accessCode,
+          }),
+        })
+
+        const data = await response.json()
+        if (response.ok && data.valid) {
+          setServerSyncedCredits(data.remaining_credits)
+        }
+      } catch (error) {
+        console.error("Failed to sync credits from backend:", error)
+      }
+    }
+
+    syncCreditsFromBackend()
 
     return subscribeToCreditsUpdated(() => updateTotalCredits())
   }, [])
@@ -186,7 +216,7 @@ function PaymentModal({ onClose, onSuccess }) {
         const data = await response.json()
 
         if (data.valid) {
-          setPaidCreditsOnly(data.remaining_credits)
+          setServerSyncedCredits(data.remaining_credits)
           setStoredAccessCode(accessCode)
 
           alert(`✅ Successfully restored ${data.remaining_credits} generation credits!`)

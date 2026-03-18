@@ -54,6 +54,10 @@ export const setPaidCreditsOnly = (paidCredits) => {
   setStoredCredits({ freeCredits, paidCredits })
 }
 
+export const setServerSyncedCredits = (remainingCredits) => {
+  setStoredCredits({ freeCredits: 0, paidCredits: remainingCredits })
+}
+
 export const consumeStoredCredit = () => {
   const { freeCredits, paidCredits } = getStoredCredits()
 

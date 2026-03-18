@@ -22,22 +22,36 @@ const HistoryStatistic = () => {
   }
 
   const fetchStatisticsData = async (type) => {
+    let lastError = null
+
     try {
       setLoading(true)
       setError(null)
+      for (let attempt = 1; attempt <= 2; attempt += 1) {
+        try {
+          const response = await API.get(`/api/history-statistic/${type}`)
+          const data = response.data
 
-      const response = await API.get(`/api/history-statistic/${type}`)
-      const data = response.data
+          setWhiteBallOccurrences(data.whiteballoccurrences || {})
 
-      setWhiteBallOccurrences(data.whiteballoccurrences || {})
+          if (type === "MegaMillion") {
+            setSpecialBallOccurrences(data.megaBalloccurrences || {})
+          } else if (type === "PowerBall") {
+            setSpecialBallOccurrences(data.powerballoccurrences || {})
+          }
 
-      if (type === "MegaMillion") {
-        setSpecialBallOccurrences(data.megaBalloccurrences || {})
-      } else if (type === "PowerBall") {
-        setSpecialBallOccurrences(data.powerballoccurrences || {})
+          return
+        } catch (err) {
+          lastError = err
+          if (attempt < 2) {
+            await new Promise((resolve) => setTimeout(resolve, 1500))
+          }
+        }
       }
+
+      throw lastError || new Error("History statistics request failed")
     } catch (err) {
-      console.error("Error fetching data:", err)
+      console.error("Error fetching statistics data:", err)
       setError("Failed to fetch data. Please try again later.")
     } finally {
       setLoading(false)

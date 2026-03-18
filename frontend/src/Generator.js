@@ -7,7 +7,7 @@ import {
   consumeStoredCredit,
   getStoredAccessCode,
   getStoredCredits,
-  setPaidCreditsOnly,
+  setServerSyncedCredits,
 } from "./credits"
 
 function Generator({ onCreditsUpdate }) {
@@ -35,7 +35,7 @@ function Generator({ onCreditsUpdate }) {
       if (response.data.valid) {
         const totalCredits = response.data.remaining_credits
         setRemainingCredits(totalCredits)
-        setPaidCreditsOnly(totalCredits)
+        setServerSyncedCredits(totalCredits)
         return totalCredits
       } else {
         const { totalCredits } = getStoredCredits()
@@ -66,7 +66,7 @@ function Generator({ onCreditsUpdate }) {
 
       if (response.data.success) {
         setRemainingCredits(response.data.remaining_credits)
-        setPaidCreditsOnly(response.data.remaining_credits)
+        setServerSyncedCredits(response.data.remaining_credits)
 
         if (onCreditsUpdate) onCreditsUpdate()
         return true

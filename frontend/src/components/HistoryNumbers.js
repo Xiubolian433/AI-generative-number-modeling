@@ -10,6 +10,7 @@ const HistoryNumbers = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [lotteryType, setLotteryType] = useState("MegaMillion")
+  const [error, setError] = useState(null)
 
   const itemsPerPage = 20
   const maxPageButtons = 10
@@ -63,12 +64,29 @@ const HistoryNumbers = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      let lastError = null
+
       setLoading(true)
+      setError(null)
       try {
-        const response = await API.get(`/api/history-numbers/${lotteryType}`)
-        setData(response.data)
+        for (let attempt = 1; attempt <= 2; attempt += 1) {
+          try {
+            const response = await API.get(`/api/history-numbers/${lotteryType}`)
+            setData(response.data)
+            return
+          } catch (requestError) {
+            lastError = requestError
+            if (attempt < 2) {
+              await new Promise((resolve) => setTimeout(resolve, 1500))
+            }
+          }
+        }
+
+        throw lastError || new Error("History numbers request failed")
       } catch (error) {
         console.error("Error fetching data:", error)
+        setData([])
+        setError("Failed to fetch data. Please try again later.")
       } finally {
         setLoading(false)
       }
@@ -106,6 +124,10 @@ const HistoryNumbers = () => {
 
   if (loading) {
     return <div className="loading">Loading...</div>
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>
   }
 
   const { headers, fields } = tableConfig[lotteryType]
