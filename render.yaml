@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: starter
     region: oregon
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r backend/requirements.deploy.txt
     startCommand: gunicorn --chdir backend --bind 0.0.0.0:$PORT Flask_app_simplified:app
     healthCheckPath: /api/health
     autoDeployTrigger: commit
