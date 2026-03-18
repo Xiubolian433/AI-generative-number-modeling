@@ -805,11 +805,22 @@ body {
   font-family: "Roboto", Arial, sans-serif;
   background: linear-gradient(135deg, #1c013b, #3b005f);
   color: #fff;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+}
+
+.App {
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .navbar {
@@ -820,36 +831,43 @@ body {
   background-color: rgba(0, 0, 0, 0.7);
   color: #fff;
   display: flex;
-  justify-content: space-between; /* 左右对齐 */
-  align-items: center; /* 垂直居中 */
-  padding: 10px 30px; /* 控制内边距 */
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   z-index: 100;
   font-family: "Roboto", Arial, sans-serif;
-  height: 60px; /* 固定导航栏高度 */
+  min-height: 60px;
+  box-sizing: border-box;
 }
 
 .navbar h1 {
-  font-size: 30px;
+  font-size: clamp(1.6rem, 2vw, 1.9rem);
   font-weight: bold;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-  margin: 0; /* 去掉外边距 */
-  line-height: 60px; /* 行高等于导航栏高度，确保垂直居中 */
+  margin: 0;
+  line-height: 1.1;
+  flex: 1 1 320px;
+  min-width: 0;
 }
 
 .navbar nav {
   display: flex;
-  align-items: center; /* 垂直居中对齐导航链接 */
-  gap: 20px; /* 设置导航链接间距 */
-  margin-right: 60px; /* 减少右侧空白 */
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-right: 0;
+  flex: 1 1 420px;
 }
 
 .navbar nav a {
-  color: #ddd; /* 设置链接文字颜色 */
-  text-decoration: underline; /* 去掉下划线 */
-  font-size: 18px; /* 设置字体大小 */
-  font-weight: bold; /* 设置字体加粗 */
-  transition: color 0.5s ease; /* 添加颜色过渡效果 */
+  color: #ddd;
+  text-decoration: underline;
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  font-weight: bold;
+  transition: color 0.5s ease;
 }
 
 .navbar nav a:hover {
@@ -860,18 +878,18 @@ body {
   background-color: #4caf50;
   color: #ffffff;
   border: none;
-  padding: 10px 20px;
+  padding: 10px 18px;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  height: 35px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: auto;
-  min-width: 120px;
+  white-space: nowrap;
+  min-width: 132px;
 }
 
 .topup-button:hover {
@@ -1012,6 +1030,7 @@ body {
   position: relative;
   max-height: 90vh;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .modal-header {
@@ -1273,6 +1292,7 @@ body {
   display: flex;
   gap: 10px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .restore-btn {
@@ -1306,29 +1326,27 @@ body {
 
 .generator-wrapper {
   display: flex;
-  flex-direction: column; /* 垂直排列 */
-  justify-content: center; /* 垂直居中 */
-  align-items: center; /* 水平居中 */
-  min-height: calc(100vh - 60px);
-  text-align: center; /* 文本居中 */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
   position: relative;
   z-index: 1;
-  padding: 20px;
+  padding: 120px 16px 40px;
   box-sizing: border-box;
 }
 
 .button-container {
   display: flex;
-  flex-direction: column; /* 垂直排列 */
-  justify-content: center; /* 父容器垂直居中 */
-  align-items: center; /* 水平居中 */
-  min-height: calc(100vh - 60px);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   gap: clamp(15px, 3vw, 20px);
   z-index: 1;
-  padding: 20px;
+  padding: 340px 16px 40px;
   box-sizing: border-box;
-  /* 调整按钮容器位置，为typewriter留出空间 */
-  margin-top: clamp(80px, 12vh, 120px);
 }
 
 .Mega-Million,
@@ -1340,9 +1358,9 @@ body {
   border-radius: 8px; /* 设置圆角 */
   font-size: clamp(20px, 4vw, 25px); /* 设置字体大小 */
   font-weight: bold; /* 加粗文字 */
-  cursor: pointer; /* 鼠标悬浮时显示��针 */
+  cursor: pointer;
   z-index: 1;
-  transition: transform 0.3s ease, background-color 0.3s ease; /* 添加过渡效果 */
+  transition: transform 0.3s ease, background-color 0.3s ease;
   min-width: 200px;
   max-width: 90%;
 }
@@ -1374,46 +1392,50 @@ body {
 /* 移动设备适配 */
 @media (max-width: 768px) {
   .navbar {
-    padding: 10px 15px;
-    height: 50px;
+    padding: 10px 14px 12px;
     flex-direction: column;
+    align-items: stretch;
     gap: 10px;
-    height: auto;
-    min-height: 50px;
+    min-height: 88px;
   }
 
   .navbar h1 {
-    font-size: 22px;
+    font-size: 1.25rem;
     line-height: normal;
+    text-align: left;
+    flex-basis: auto;
   }
 
   .navbar nav {
-    margin-right: 0;
-    gap: 15px;
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+    flex-basis: auto;
   }
 
   .navbar nav a {
-    font-size: 14px;
+    font-size: 0.9rem;
   }
 
   .topup-button {
-    padding: 8px 15px;
+    padding: 8px 14px;
     font-size: 14px;
-    height: 30px;
-    min-width: 100px;
+    min-height: 36px;
+    min-width: 116px;
   }
 
   .generator-wrapper,
   .button-container {
-    min-height: calc(100vh - 100px);
-    padding: 10px;
-    margin-top: clamp(60px, 10vh, 80px);
+    min-height: 100vh;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .Mega-Million,
   .Power-Ball {
-    width: 80%;
-    max-width: 250px;
+    width: min(100%, 280px);
+    max-width: 280px;
+    padding: 18px 24px;
   }
 
   .dev-tools {
@@ -1429,24 +1451,40 @@ body {
   }
 
   .payment-modal {
-    width: 95%;
-    padding: 20px;
+    width: min(94vw, 420px);
+    padding: 18px;
+    border-radius: 16px;
   }
 
   .payment-options {
     grid-template-columns: 1fr;
     gap: 10px;
   }
+
+  .button-container {
+    padding-top: 280px;
+  }
+
+  .generator-wrapper {
+    padding-top: 150px;
+  }
+
+  .back-button {
+    width: min(100%, 180px);
+    padding: 14px 22px;
+    font-size: 1.4rem;
+  }
 }
 
 /* 平板设备适配 */
 @media (min-width: 769px) and (max-width: 1024px) {
   .navbar {
-    padding: 10px 25px;
+    padding: 12px 20px;
+    gap: 12px;
   }
 
   .navbar h1 {
-    font-size: 26px;
+    font-size: 1.5rem;
   }
 
   .navbar nav a {
@@ -1458,7 +1496,11 @@ body {
   }
 
   .button-container {
-    margin-top: clamp(70px, 11vh, 100px);
+    padding-top: 260px;
+  }
+
+  .generator-wrapper {
+    padding-top: 120px;
   }
 
   .dev-tools {
@@ -1521,7 +1563,7 @@ body {
 /* 移动设备适配 */
 @media (max-width: 768px) {
   .visit-counter {
-    bottom: 60px; /* 为开发工具让出空间 */
+    bottom: 20px;
     left: 15px;
     padding: 6px 12px;
   }
@@ -1555,8 +1597,47 @@ body {
 
 /* 超小屏幕适配 */
 @media (max-width: 480px) {
+  .navbar {
+    padding: 10px 12px 14px;
+  }
+
+  .navbar nav {
+    justify-content: center;
+  }
+
+  .navbar nav a {
+    font-size: 0.85rem;
+  }
+
+  .topup-button {
+    min-width: 108px;
+    font-size: 13px;
+  }
+
+  .button-container {
+    padding-top: 250px;
+  }
+
+  .generator-wrapper {
+    padding-top: 144px;
+    padding-bottom: 32px;
+  }
+
+  .payment-modal {
+    width: calc(100vw - 20px);
+    padding: 16px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .payment-option {
+    padding: 16px;
+  }
+
   .visit-counter {
-    bottom: 55px; /* 为开发工具让出空间 */
+    bottom: 16px;
     left: 10px;
     padding: 5px 10px;
   }
@@ -1578,4 +1659,3 @@ body {
     font-size: clamp(0.9rem, 2vw, 1.1rem);
   }
 }
-

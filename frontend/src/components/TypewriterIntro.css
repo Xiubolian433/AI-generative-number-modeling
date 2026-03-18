@@ -13,6 +13,7 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); /* 增强阴影效果 */
   overflow-y: auto;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .typewriter-content {
@@ -78,15 +79,18 @@
 /* 移动设备适配 */
 @media (max-width: 768px) {
   .typewriter-intro {
-    top: calc(120px + 80px); /* 移动设备增加更多间距 */
-    left: 20px;
-    width: clamp(300px, 88vw, 380px);
-    height: clamp(200px, 22vh, 280px);
-    padding: 24px;
+    position: relative;
+    top: auto;
+    left: auto;
+    width: min(100%, calc(100vw - 24px));
+    height: auto;
+    min-height: 170px;
+    margin: 132px auto 20px;
+    padding: 20px 18px;
   }
 
   .typewriter-content {
-    font-size: clamp(0.85rem, 1.5vw, 1rem);
+    font-size: clamp(0.9rem, 3.6vw, 1rem);
     line-height: 1.55;
   }
 }
@@ -126,11 +130,9 @@
 /* 超小屏幕适配 */
 @media (max-width: 480px) {
   .typewriter-intro {
-    top: calc(120px + 70px);
-    left: 15px;
-    width: clamp(280px, 92vw, 340px);
-    height: clamp(180px, 20vh, 250px);
-    padding: 20px;
+    width: calc(100vw - 20px);
+    margin-top: 126px;
+    padding: 18px 16px;
   }
 
   .typewriter-content {
@@ -205,7 +207,6 @@
   pointer-events: none;
   border-radius: 0 0 18px 18px;
 }
-
 
 
 

@@ -103,7 +103,8 @@ old version
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   padding: 30px;
-  width: 600px; /* 调整宽度以适应横向排列 */
+  width: min(600px, calc(100vw - 32px));
+  box-sizing: border-box;
   text-align: center;
   z-index: 1;
 }
@@ -150,6 +151,8 @@ old version
   display: flex;
   justify-content: center;
   gap: 15px;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .number {
@@ -226,5 +229,60 @@ old version
   font-weight: bold;
 }
 
+@media (max-width: 768px) {
+  .generator-container {
+    width: min(100%, calc(100vw - 24px));
+    padding: 20px 14px;
+    border-radius: 18px;
+  }
+
+  .generator-container h1 {
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+    margin-bottom: 18px;
+  }
+
+  .credits-text {
+    font-size: 15px;
+  }
+
+  .number-display-row {
+    gap: 8px;
+  }
+
+  .number,
+  .mega-ball {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .generate-button {
+    width: min(100%, 200px);
+    padding: 14px 20px;
+    font-size: 18px;
+    margin-top: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .generator-container {
+    padding: 18px 12px;
+  }
+
+  .number-display-wrapper {
+    gap: 10px;
+  }
+
+  .number-display-row {
+    gap: 6px;
+  }
+
+  .number,
+  .mega-ball {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}
 
 
