@@ -3,6 +3,7 @@ import torch
 import pandas as pd
 import os
 from pathlib import Path
+from threading import Lock
 from flask_caching import Cache
 from gan_generator import Generator  # Mega Millions 的生成器类
 from gan_power_generator import PowerBallGenerator  # Power Ball 的生成器类
@@ -44,6 +45,8 @@ PAYMENTS_DB_PATH = Path(os.getenv('PAYMENTS_DB_PATH', str(DEFAULT_DB_PATH)))
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 runtime_initialized = False
+models_initialized = False
+models_lock = Lock()
 
 
 def paypal_is_configured():
@@ -213,38 +216,47 @@ def load_condition_features_mega(file_path, num_classes=70, mega_classes=25):
         return torch.zeros(num_classes * 5 + mega_classes).unsqueeze(0)
 
 
-# 尝试加载条件特征
-mega_condition_features = load_condition_features_mega(csv_path)
-
-# Power Ball 使用默认条件特征
-power_condition_features = torch.zeros(power_condition_dim).unsqueeze(0)
-print("Power Ball 使用默认条件特征，特征维度：", power_condition_features.size())
-
-# **加载生成器模型**
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-# Mega Millions
 mega_model_path = BASE_DIR / "gan_generator.pth"
-G_mega = Generator(mega_latent_dim, mega_condition_dim, mega_num_classes * 5, mega_mega_classes).to(device)
-
-if os.path.exists(mega_model_path):
-    G_mega.load_state_dict(torch.load(mega_model_path, map_location=device))
-    G_mega.eval()
-    print("✅ Mega Millions 生成器模型加载成功！")
-else:
-    print(f"⚠️  未找到模型文件：{mega_model_path}")
-
-# Power Ball
 power_model_path = BASE_DIR / "gan_powerball_generator.pth"
-G_power = PowerBallGenerator(power_latent_dim, power_condition_dim, power_num_classes * 5, power_mega_classes).to(
-    device)
+mega_condition_features = None
+power_condition_features = None
+G_mega = None
+G_power = None
 
-if os.path.exists(power_model_path):
-    G_power.load_state_dict(torch.load(power_model_path, map_location=device))
-    G_power.eval()
-    print("✅ Power Ball 生成器模型加载成功！")
-else:
-    print(f"⚠️  未找到模型文件：{power_model_path}")
+
+def initialize_generation_runtime():
+    """按需加载模型，避免健康检查和历史接口把大模型一起拉起。"""
+    global G_mega, G_power, mega_condition_features, power_condition_features, models_initialized
+
+    if models_initialized:
+        return
+
+    with models_lock:
+        if models_initialized:
+            return
+
+        mega_condition_features = load_condition_features_mega(csv_path)
+        power_condition_features = torch.zeros(power_condition_dim).unsqueeze(0)
+        print("Power Ball 使用默认条件特征，特征维度：", power_condition_features.size())
+
+        G_mega = Generator(mega_latent_dim, mega_condition_dim, mega_num_classes * 5, mega_mega_classes).to(device)
+        if not mega_model_path.exists():
+            raise FileNotFoundError(f"未找到 Mega Millions 模型文件：{mega_model_path}")
+        G_mega.load_state_dict(torch.load(mega_model_path, map_location=device))
+        G_mega.eval()
+        print("✅ Mega Millions 生成器模型加载成功！")
+
+        G_power = PowerBallGenerator(
+            power_latent_dim, power_condition_dim, power_num_classes * 5, power_mega_classes
+        ).to(device)
+        if not power_model_path.exists():
+            raise FileNotFoundError(f"未找到 Power Ball 模型文件：{power_model_path}")
+        G_power.load_state_dict(torch.load(power_model_path, map_location=device))
+        G_power.eval()
+        print("✅ Power Ball 生成器模型加载成功！")
+
+        models_initialized = True
 
 
 # **推理函数**
@@ -279,6 +291,7 @@ def generate_numbers(generator, batch_size, latent_dim, condition_features, num_
 # **原有的彩票生成API路由**
 @app.route("/generate/mega_millions", methods=["GET"])
 def generate_mega_millions():
+    initialize_generation_runtime()
     batch_size = int(request.args.get("batch_size", 1))
     generated_numbers, generated_mega = generate_numbers(
         G_mega, batch_size, mega_latent_dim, mega_condition_features, mega_num_classes, mega_mega_classes
@@ -294,6 +307,7 @@ def generate_mega_millions():
 
 @app.route("/generate/power_ball", methods=["GET"])
 def generate_power_ball():
+    initialize_generation_runtime()
     batch_size = int(request.args.get("batch_size", 1))
     generated_numbers, generated_mega = generate_numbers(
         G_power, batch_size, power_latent_dim, power_condition_features, power_num_classes, power_mega_classes

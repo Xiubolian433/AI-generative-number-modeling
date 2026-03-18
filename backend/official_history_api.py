@@ -1,7 +1,9 @@
 import json
+import os
 import re
 from collections import Counter
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 import requests
@@ -10,26 +12,75 @@ import requests
 USER_AGENT = "Mozilla/5.0"
 CACHE_TTL_SECONDS = 3600
 _CACHE = {}
+CACHE_DIR = Path(os.getenv("HISTORY_CACHE_DIR", Path(__file__).resolve().parent / "history_cache"))
+
+
+def _cache_file_path(cache_key):
+    return CACHE_DIR / f"{cache_key}.json"
+
+
+def _ensure_cache_dir():
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _cache_get(cache_key):
     cached = _CACHE.get(cache_key)
     if not cached:
-        return None
+        file_cached = _file_cache_get(cache_key)
+        if file_cached is not None:
+            _CACHE[cache_key] = {
+                "cached_at": datetime.utcnow(),
+                "data": file_cached,
+            }
+        return file_cached
 
     cached_at = cached["cached_at"]
     if (datetime.utcnow() - cached_at).total_seconds() > CACHE_TTL_SECONDS:
-        return None
+        file_cached = _file_cache_get(cache_key)
+        if file_cached is not None:
+            _CACHE[cache_key] = {
+                "cached_at": datetime.utcnow(),
+                "data": file_cached,
+            }
+        return file_cached
 
     return cached["data"]
 
 
 def _cache_set(cache_key, data):
+    _ensure_cache_dir()
     _CACHE[cache_key] = {
         "cached_at": datetime.utcnow(),
         "data": data,
     }
+    with _cache_file_path(cache_key).open("w", encoding="utf-8") as cache_file:
+        json.dump(
+            {
+                "cached_at": datetime.utcnow().isoformat(),
+                "data": data,
+            },
+            cache_file,
+            ensure_ascii=False,
+        )
     return data
+
+
+def _file_cache_get(cache_key, allow_stale=False):
+    cache_file = _cache_file_path(cache_key)
+    if not cache_file.exists():
+        return None
+
+    try:
+        with cache_file.open("r", encoding="utf-8") as fh:
+            payload = json.load(fh)
+
+        cached_at = datetime.fromisoformat(payload["cached_at"])
+        if not allow_stale and (datetime.utcnow() - cached_at).total_seconds() > CACHE_TTL_SECONDS:
+            return None
+
+        return payload["data"]
+    except Exception:
+        return None
 
 
 def _counter_to_dict(counter):
@@ -73,36 +124,42 @@ def fetch_mega_millions_history():
     draws = []
     total_results = None
 
-    while total_results is None or len(draws) < total_results:
-        payload = {
-            "pageNumber": page_number,
-            "pageSize": page_size,
-            "startDate": "",
-            "endDate": "",
-        }
-        response = requests.post(url, json=payload, headers=headers, timeout=20)
-        response.raise_for_status()
+    try:
+        while total_results is None or len(draws) < total_results:
+            payload = {
+                "pageNumber": page_number,
+                "pageSize": page_size,
+                "startDate": "",
+                "endDate": "",
+            }
+            response = requests.post(url, json=payload, headers=headers, timeout=20)
+            response.raise_for_status()
 
-        data = json.loads(response.json()["d"])
-        total_results = data["TotalResults"]
+            data = json.loads(response.json()["d"])
+            total_results = data["TotalResults"]
 
-        for draw in data["DrawingData"]:
-            megaplier = draw.get("Megaplier")
-            draws.append(
-                {
-                    "DrawingDate": draw["PlayDate"],
-                    "Number1": draw["N1"],
-                    "Number2": draw["N2"],
-                    "Number3": draw["N3"],
-                    "Number4": draw["N4"],
-                    "Number5": draw["N5"],
-                    "MegaBall": draw["MBall"],
-                    "Megaplier": None if megaplier in (-1, None) else megaplier,
-                    "JackPot": None,
-                }
-            )
+            for draw in data["DrawingData"]:
+                megaplier = draw.get("Megaplier")
+                draws.append(
+                    {
+                        "DrawingDate": draw["PlayDate"],
+                        "Number1": draw["N1"],
+                        "Number2": draw["N2"],
+                        "Number3": draw["N3"],
+                        "Number4": draw["N4"],
+                        "Number5": draw["N5"],
+                        "MegaBall": draw["MBall"],
+                        "Megaplier": None if megaplier in (-1, None) else megaplier,
+                        "JackPot": None,
+                    }
+                )
 
-        page_number += 1
+            page_number += 1
+    except Exception:
+        stale_cache = _file_cache_get(cache_key, allow_stale=True)
+        if stale_cache is not None:
+            return stale_cache
+        raise
 
     return _cache_set(cache_key, draws)
 
@@ -130,66 +187,72 @@ def fetch_powerball_history():
 
     card_pattern = re.compile(r'<a class="card"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', re.S)
 
-    while end_date >= first_draw_date:
-        response = requests.get(
-            "https://www.powerball.com/previous-results",
-            params={
-                "gc": "powerball",
-                "sd": first_draw_date.isoformat(),
-                "ed": end_date.isoformat(),
-            },
-            headers=headers,
-            timeout=20,
-        )
-        response.raise_for_status()
-        html = response.text
-
-        page_draws = []
-        for match in card_pattern.finditer(html):
-            href = match.group(1)
-            snippet = match.group(2)
-            query = parse_qs(urlparse(href).query)
-            draw_dates = query.get("date")
-
-            if not draw_dates:
-                continue
-
-            draw_date = draw_dates[0]
-            numbers = re.findall(r'item-powerball">(\d+)<', snippet)
-            multiplier_match = re.search(r'<span class="multiplier">([^<]+)</span>', snippet)
-
-            if len(numbers) != 6:
-                continue
-
-            page_draws.append(
-                {
-                    "DrawingDate": draw_date,
-                    "Number1": int(numbers[0]),
-                    "Number2": int(numbers[1]),
-                    "Number3": int(numbers[2]),
-                    "Number4": int(numbers[3]),
-                    "Number5": int(numbers[4]),
-                    "PowerBall": int(numbers[5]),
-                    "Jackpot": None,
-                    "EstimatedCashValue": None,
-                    "PowerPlay": multiplier_match.group(1) if multiplier_match else None,
-                }
+    try:
+        while end_date >= first_draw_date:
+            response = requests.get(
+                "https://www.powerball.com/previous-results",
+                params={
+                    "gc": "powerball",
+                    "sd": first_draw_date.isoformat(),
+                    "ed": end_date.isoformat(),
+                },
+                headers=headers,
+                timeout=20,
             )
+            response.raise_for_status()
+            html = response.text
 
-        if not page_draws:
-            break
+            page_draws = []
+            for match in card_pattern.finditer(html):
+                href = match.group(1)
+                snippet = match.group(2)
+                query = parse_qs(urlparse(href).query)
+                draw_dates = query.get("date")
 
-        for draw in page_draws:
-            draws_by_date[draw["DrawingDate"]] = draw
+                if not draw_dates:
+                    continue
 
-        oldest_page_date = min(datetime.strptime(draw["DrawingDate"], "%Y-%m-%d").date() for draw in page_draws)
-        if oldest_page_date <= first_draw_date:
-            break
+                draw_date = draw_dates[0]
+                numbers = re.findall(r'item-powerball">(\d+)<', snippet)
+                multiplier_match = re.search(r'<span class="multiplier">([^<]+)</span>', snippet)
 
-        next_end_date = oldest_page_date - timedelta(days=1)
-        if next_end_date >= end_date:
-            break
-        end_date = next_end_date
+                if len(numbers) != 6:
+                    continue
+
+                page_draws.append(
+                    {
+                        "DrawingDate": draw_date,
+                        "Number1": int(numbers[0]),
+                        "Number2": int(numbers[1]),
+                        "Number3": int(numbers[2]),
+                        "Number4": int(numbers[3]),
+                        "Number5": int(numbers[4]),
+                        "PowerBall": int(numbers[5]),
+                        "Jackpot": None,
+                        "EstimatedCashValue": None,
+                        "PowerPlay": multiplier_match.group(1) if multiplier_match else None,
+                    }
+                )
+
+            if not page_draws:
+                break
+
+            for draw in page_draws:
+                draws_by_date[draw["DrawingDate"]] = draw
+
+            oldest_page_date = min(datetime.strptime(draw["DrawingDate"], "%Y-%m-%d").date() for draw in page_draws)
+            if oldest_page_date <= first_draw_date:
+                break
+
+            next_end_date = oldest_page_date - timedelta(days=1)
+            if next_end_date >= end_date:
+                break
+            end_date = next_end_date
+    except Exception:
+        stale_cache = _file_cache_get(cache_key, allow_stale=True)
+        if stale_cache is not None:
+            return stale_cache
+        raise
 
     draws = sorted(draws_by_date.values(), key=lambda draw: draw["DrawingDate"], reverse=True)
     return _cache_set(cache_key, draws)

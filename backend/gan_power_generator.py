@@ -306,13 +306,6 @@
 
 import torch
 import torch.nn as nn
-import torch.optim as optim
-import torch.autograd as autograd
-import numpy as np
-import pandas as pd
-from tqdm import tqdm
-from torch.utils.tensorboard import SummaryWriter
-from scipy.stats import entropy
 
 num_classes = 69
 power_classes = 26
@@ -383,6 +376,14 @@ class Discriminator(nn.Module):
 PowerBallGenerator = Generator
 
 def main():
+    import torch.autograd as autograd
+    import torch.optim as optim
+    import numpy as np
+    import pandas as pd
+    from scipy.stats import entropy
+    from torch.utils.tensorboard import SummaryWriter
+    from tqdm import tqdm
+
     # ========== 数据加载和预处理 ==========
     file_path = "/scratch/shuhaoz/lotteryAI/Lottery_data/Power_API_data.csv"
     data = pd.read_csv(file_path)

@@ -274,13 +274,6 @@
 
 import torch
 import torch.nn as nn
-import torch.optim as optim
-import torch.autograd as autograd
-import numpy as np
-import pandas as pd
-from tqdm import tqdm
-from torch.utils.tensorboard import SummaryWriter
-from scipy.stats import entropy
 
 # 数据归一化
 num_classes = 70
@@ -351,6 +344,14 @@ class Discriminator(nn.Module):
         return self.model(x)
 
 def main():
+    import torch.autograd as autograd
+    import torch.optim as optim
+    import numpy as np
+    import pandas as pd
+    from scipy.stats import entropy
+    from torch.utils.tensorboard import SummaryWriter
+    from tqdm import tqdm
+
     # ========== 数据加载和预处理 ==========
     file_path = "E:\\Pychram\\lotteryAI\\Lottery_data\\API_drawing_data.csv"  # CSV 文件路径
     data = pd.read_csv(file_path)
