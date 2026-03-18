@@ -269,7 +269,7 @@ The repository includes [render.yaml](/Users/shuhaozhang/Documents/AI-generative
 Recommended backend settings:
 
 - Runtime: `Python`
-- Python version: `3.11` (the repository includes `runtime.txt` for Render compatibility with PyTorch)
+- Python version: `3.11` (the repository includes `runtime.txt` and `.python-version` for Render compatibility with PyTorch)
 - Plan: `Starter` or higher
 - Start command: `gunicorn --chdir backend --bind 0.0.0.0:$PORT Flask_app_simplified:app`
 - Health check path: `/api/health`

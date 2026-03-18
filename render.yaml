@@ -18,6 +18,8 @@ services:
         - Lottery_data/**
         - requirements.txt
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
       - key: PAYMENTS_DB_PATH
         value: /var/data/payments.db
       - key: PAYPAL_MODE
