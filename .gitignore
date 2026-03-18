@@ -1,0 +1,43 @@
+# macOS / OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Local virtual environments
+.venv/
+venv/
+env/
+
+# Backend local config / runtime files
+backend/.env
+backend/.env.local
+backend/.env.production
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+backend/logs/
+
+# Frontend local files
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

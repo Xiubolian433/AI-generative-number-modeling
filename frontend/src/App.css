@@ -1,0 +1,1581 @@
+/*#tsparticles {*/
+/*  position: fixed;*/
+/*  top: 0;*/
+/*  left: 0;*/
+/*  width: 100%;*/
+/*  height: 100%;*/
+/*  z-index: -1; !* 确保背景在最底层 *!*/
+/*}*/
+
+/*body {*/
+/*  margin: 0;*/
+/*  font-family: "Roboto", Arial, sans-serif;*/
+/*  background: linear-gradient(135deg, #1c013b, #3b005f);*/
+/*  color: #fff;*/
+/*  height: 100vh;*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*}*/
+
+/*.navbar {*/
+/*  position: fixed;*/
+/*  top: 0;*/
+/*  left: 0;*/
+/*  width: 100%;*/
+/*  background-color: rgba(0, 0, 0, 0.7);*/
+/*  color: #fff;*/
+/*  display: flex;*/
+/*  justify-content: space-between; !* 左右对齐 *!*/
+/*  align-items: center; !* 垂直居中 *!*/
+/*  padding: 10px 30px; !* 控制内边距 *!*/
+/*  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);*/
+/*  z-index: 100;*/
+/*  font-family: "Roboto", Arial, sans-serif;*/
+/*  height: 60px; !* 固定导航栏高度 *!*/
+/*}*/
+
+/*.navbar h1 {*/
+/*  font-size: 30px;*/
+/*  font-weight: bold;*/
+/*  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);*/
+/*  margin: 0; !* 去掉外边距 *!*/
+/*  line-height: 60px; !* 行高等于导航栏高度，确保垂直居中 *!*/
+/*}*/
+
+/*.navbar nav {*/
+/*  display: flex;*/
+/*  align-items: center; !* 垂直居中对齐导航链接 *!*/
+/*  gap: 20px; !* 设置导航链接间距 *!*/
+/*  margin-right: 60px; !* 减少右侧空白 *!*/
+/*}*/
+
+/*.navbar nav a {*/
+/*  color: #ddd; !* 设置链接文字颜色 *!*/
+/*  text-decoration: underline; !* 去掉下划线 *!*/
+/*  font-size: 18px; !* 设置字体大小 *!*/
+/*  font-weight: bold; !* 设置字体加粗 *!*/
+/*  transition: color 0.5s ease; !* 添加颜色过渡效果 *!*/
+/*}*/
+
+/*.navbar nav a:hover {*/
+/*  color: #656262;*/
+/*}*/
+
+/*.topup-button {*/
+/*  background-color: #4caf50;*/
+/*  color: #ffffff;*/
+/*  border: none;*/
+/*  padding: 10px 20px;*/
+/*  border-radius: 5px;*/
+/*  font-size: 16px;*/
+/*  font-weight: bold;*/
+/*  cursor: pointer;*/
+/*  transition: background-color 0.3s ease, transform 0.2s ease;*/
+/*  height: 35px;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  margin-left: auto;*/
+/*  min-width: 120px;*/
+/*}*/
+
+/*.topup-button:hover {*/
+/*  background-color: #45a049;*/
+/*  transform: scale(1.05);*/
+/*}*/
+
+/*!* Developer Tools *!*/
+/*.dev-tools {*/
+/*  position: fixed;*/
+/*  bottom: 20px;*/
+/*  right: 20px;*/
+/*  display: flex;*/
+/*  gap: 10px;*/
+/*  z-index: 1000;*/
+/*}*/
+
+/*.dev-button {*/
+/*  background: rgba(0, 0, 0, 0.7);*/
+/*  border: 2px solid rgba(255, 255, 255, 0.3);*/
+/*  color: white;*/
+/*  padding: 8px 12px;*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  font-size: 12px;*/
+/*  font-weight: bold;*/
+/*  transition: all 0.3s ease;*/
+/*  backdrop-filter: blur(5px);*/
+/*  min-width: 50px;*/
+/*}*/
+
+/*.dev-button:hover {*/
+/*  background: rgba(255, 255, 255, 0.1);*/
+/*  border-color: rgba(255, 255, 255, 0.5);*/
+/*  transform: translateY(-2px);*/
+/*}*/
+
+/*.dev-button.active {*/
+/*  background: #4caf50;*/
+/*  border-color: #4caf50;*/
+/*  color: white;*/
+/*  animation: pulse 2s infinite;*/
+/*}*/
+
+/*.dev-button.reset {*/
+/*  background: #f44336;*/
+/*  border-color: #f44336;*/
+/*}*/
+
+/*.dev-button.reset:hover {*/
+/*  background: #d32f2f;*/
+/*  border-color: #d32f2f;*/
+/*}*/
+
+/*.dev-button.admin {*/
+/*  background: #9c27b0;*/
+/*  border-color: #9c27b0;*/
+/*}*/
+
+/*.dev-button.admin:hover {*/
+/*  background: #7b1fa2;*/
+/*  border-color: #7b1fa2;*/
+/*}*/
+
+/*@keyframes pulse {*/
+/*  0%,*/
+/*  100% {*/
+/*    opacity: 1;*/
+/*  }*/
+/*  50% {*/
+/*    opacity: 0.7;*/
+/*  }*/
+/*}*/
+
+/*!* Test Mode Styles *!*/
+/*.test-badge {*/
+/*  background: #ff9800;*/
+/*  color: white;*/
+/*  padding: 2px 8px;*/
+/*  border-radius: 12px;*/
+/*  font-size: 12px;*/
+/*  margin-left: 10px;*/
+/*}*/
+
+/*.processing-badge {*/
+/*  background: #2196f3;*/
+/*  color: white;*/
+/*  padding: 2px 8px;*/
+/*  border-radius: 12px;*/
+/*  font-size: 12px;*/
+/*  margin-left: 10px;*/
+/*  animation: pulse 1s infinite;*/
+/*}*/
+
+/*.payment-option.test-mode {*/
+/*  position: relative;*/
+/*  opacity: 0.8;*/
+/*}*/
+
+/*.test-overlay {*/
+/*  position: absolute;*/
+/*  top: 50%;*/
+/*  left: 50%;*/
+/*  transform: translate(-50%, -50%);*/
+/*  background: rgba(255, 152, 0, 0.9);*/
+/*  color: white;*/
+/*  padding: 4px 12px;*/
+/*  border-radius: 15px;*/
+/*  font-size: 14px;*/
+/*  font-weight: bold;*/
+/*  pointer-events: none;*/
+/*}*/
+
+/*!* 付费弹窗样式 *!*/
+/*.payment-modal-overlay {*/
+/*  position: fixed;*/
+/*  top: 0;*/
+/*  left: 0;*/
+/*  width: 100%;*/
+/*  height: 100%;*/
+/*  background: rgba(0, 0, 0, 0.8);*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  z-index: 1000;*/
+/*  backdrop-filter: blur(5px);*/
+/*}*/
+
+/*.payment-modal {*/
+/*  background: linear-gradient(135deg, #1a1a2e, #16213e);*/
+/*  border-radius: 20px;*/
+/*  padding: 30px;*/
+/*  width: 90%;*/
+/*  max-width: 500px;*/
+/*  border: 1px solid rgba(255, 255, 255, 0.2);*/
+/*  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);*/
+/*  color: white;*/
+/*  position: relative;*/
+/*  max-height: 90vh;*/
+/*  overflow-y: auto;*/
+/*}*/
+
+/*.modal-header {*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*  margin-bottom: 25px;*/
+/*}*/
+
+/*.modal-header h3 {*/
+/*  margin: 0;*/
+/*  font-size: 24px;*/
+/*  color: #ffffff;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*}*/
+
+/*.close-btn {*/
+/*  background: none;*/
+/*  border: none;*/
+/*  color: #ffffff;*/
+/*  font-size: 24px;*/
+/*  cursor: pointer;*/
+/*  padding: 0;*/
+/*  width: 30px;*/
+/*  height: 30px;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  border-radius: 50%;*/
+/*  transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.close-btn:hover {*/
+/*  background-color: rgba(255, 255, 255, 0.1);*/
+/*}*/
+
+/*.payment-options {*/
+/*  display: grid;*/
+/*  grid-template-columns: repeat(2, 1fr);*/
+/*  gap: 15px;*/
+/*  margin-bottom: 25px;*/
+/*}*/
+
+/*.payment-option {*/
+/*  background: rgba(255, 255, 255, 0.1);*/
+/*  border: 2px solid rgba(255, 255, 255, 0.2);*/
+/*  border-radius: 15px;*/
+/*  padding: 20px;*/
+/*  text-align: center;*/
+/*  cursor: pointer;*/
+/*  transition: all 0.3s ease;*/
+/*  position: relative;*/
+/*  backdrop-filter: blur(10px);*/
+/*}*/
+
+/*.payment-option:hover {*/
+/*  border-color: #4caf50;*/
+/*  background: rgba(76, 175, 80, 0.1);*/
+/*  transform: translateY(-2px);*/
+/*}*/
+
+/*.payment-option.popular {*/
+/*  border-color: #ff6b35;*/
+/*  background: rgba(255, 107, 53, 0.1);*/
+/*}*/
+
+/*.popular-badge {*/
+/*  position: absolute;*/
+/*  top: -10px;*/
+/*  right: -10px;*/
+/*  background: #ff6b35;*/
+/*  color: white;*/
+/*  padding: 5px 10px;*/
+/*  border-radius: 15px;*/
+/*  font-size: 12px;*/
+/*  font-weight: bold;*/
+/*}*/
+
+/*.payment-option .price {*/
+/*  font-size: 28px;*/
+/*  font-weight: bold;*/
+/*  color: #4caf50;*/
+/*  margin-bottom: 5px;*/
+/*}*/
+
+/*.payment-option .credits {*/
+/*  font-size: 16px;*/
+/*  margin-bottom: 5px;*/
+/*}*/
+
+/*.payment-option .per-credit {*/
+/*  font-size: 12px;*/
+/*  color: #aaa;*/
+/*}*/
+
+/*.modal-footer {*/
+/*  text-align: center;*/
+/*}*/
+
+/*.no-account-note {*/
+/*  font-size: 14px;*/
+/*  color: #aaa;*/
+/*  margin-bottom: 15px;*/
+/*  line-height: 1.4;*/
+/*}*/
+
+/*.code-restore-btn {*/
+/*  background: rgba(255, 255, 255, 0.1);*/
+/*  border: 1px solid rgba(255, 255, 255, 0.3);*/
+/*  color: white;*/
+/*  padding: 10px 20px;*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  font-size: 14px;*/
+/*  transition: all 0.3s ease;*/
+/*}*/
+
+/*.code-restore-btn:hover {*/
+/*  background: rgba(255, 255, 255, 0.2);*/
+/*}*/
+
+/*!* PayPal Section *!*/
+/*.paypal-section {*/
+/*  text-align: center;*/
+/*}*/
+
+/*.selected-package {*/
+/*  background: rgba(255, 255, 255, 0.1);*/
+/*  border-radius: 15px;*/
+/*  padding: 20px;*/
+/*  margin-bottom: 25px;*/
+/*}*/
+
+/*.selected-package h4 {*/
+/*  margin: 0 0 15px 0;*/
+/*  color: #ffffff;*/
+/*}*/
+
+/*.package-details {*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*}*/
+
+/*.package-price {*/
+/*  font-size: 32px;*/
+/*  font-weight: bold;*/
+/*  color: #4caf50;*/
+/*}*/
+
+/*.package-credits {*/
+/*  font-size: 18px;*/
+/*  color: #ffffff;*/
+/*}*/
+
+/*.paypal-container {*/
+/*  margin-bottom: 20px;*/
+/*}*/
+
+/*.paypal-container h4 {*/
+/*  margin-bottom: 20px;*/
+/*  color: #ffffff;*/
+/*}*/
+
+/*#paypal-button-container {*/
+/*  margin: 20px 0;*/
+/*}*/
+
+/*.back-to-packages-btn {*/
+/*  background: rgba(255, 255, 255, 0.1);*/
+/*  border: 1px solid rgba(255, 255, 255, 0.3);*/
+/*  color: white;*/
+/*  padding: 10px 20px;*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  font-size: 14px;*/
+/*  transition: all 0.3s ease;*/
+/*}*/
+
+/*.back-to-packages-btn:hover {*/
+/*  background: rgba(255, 255, 255, 0.2);*/
+/*}*/
+
+/*!* Processing Section *!*/
+/*.processing-section {*/
+/*  text-align: center;*/
+/*  padding: 40px 20px;*/
+/*}*/
+
+/*.spinner {*/
+/*  border: 4px solid rgba(255, 255, 255, 0.3);*/
+/*  border-radius: 50%;*/
+/*  border-top: 4px solid #4caf50;*/
+/*  width: 50px;*/
+/*  height: 50px;*/
+/*  animation: spin 1s linear infinite;*/
+/*  margin: 0 auto 20px;*/
+/*}*/
+
+/*@keyframes spin {*/
+/*  0% {*/
+/*    transform: rotate(0deg);*/
+/*  }*/
+/*  100% {*/
+/*    transform: rotate(360deg);*/
+/*  }*/
+/*}*/
+
+/*.processing-section h4 {*/
+/*  margin-bottom: 10px;*/
+/*  color: #ffffff;*/
+/*}*/
+
+/*.processing-section p {*/
+/*  color: #aaa;*/
+/*  font-size: 14px;*/
+/*}*/
+
+/*!* 访问码输入区域 *!*/
+/*.code-input-section {*/
+/*  text-align: center;*/
+/*}*/
+
+/*.code-input-section h4 {*/
+/*  margin-bottom: 10px;*/
+/*  color: #ffffff;*/
+/*}*/
+
+/*.code-input-section p {*/
+/*  color: #aaa;*/
+/*  margin-bottom: 20px;*/
+/*  font-size: 14px;*/
+/*}*/
+
+/*.code-input {*/
+/*  width: 100%;*/
+/*  padding: 12px;*/
+/*  border: 2px solid rgba(255, 255, 255, 0.3);*/
+/*  border-radius: 8px;*/
+/*  background: rgba(255, 255, 255, 0.1);*/
+/*  color: white;*/
+/*  font-size: 16px;*/
+/*  text-align: center;*/
+/*  margin-bottom: 20px;*/
+/*  backdrop-filter: blur(10px);*/
+/*}*/
+
+/*.code-input:focus {*/
+/*  outline: none;*/
+/*  border-color: #4caf50;*/
+/*}*/
+
+/*.code-input::placeholder {*/
+/*  color: rgba(255, 255, 255, 0.5);*/
+/*}*/
+
+/*.code-actions {*/
+/*  display: flex;*/
+/*  gap: 10px;*/
+/*  justify-content: center;*/
+/*}*/
+
+/*.restore-btn {*/
+/*  background: #4caf50;*/
+/*  color: white;*/
+/*  border: none;*/
+/*  padding: 12px 24px;*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  font-weight: bold;*/
+/*  transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.restore-btn:hover {*/
+/*  background: #45a049;*/
+/*}*/
+
+/*.back-btn {*/
+/*  background: rgba(255, 255, 255, 0.1);*/
+/*  color: white;*/
+/*  border: 1px solid rgba(255, 255, 255, 0.3);*/
+/*  padding: 12px 24px;*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  transition: all 0.3s ease;*/
+/*}*/
+
+/*.back-btn:hover {*/
+/*  background: rgba(255, 255, 255, 0.2);*/
+/*}*/
+
+/*.generator-wrapper {*/
+/*  display: flex;*/
+/*  flex-direction: column; !* 垂直排列 *!*/
+/*  justify-content: center; !* 垂直居中 *!*/
+/*  align-items: center; !* 水平居中 *!*/
+/*  min-height: calc(100vh - 60px);*/
+/*  text-align: center; !* 文本居中 *!*/
+/*  position: relative;*/
+/*  z-index: 1;*/
+/*  padding: 20px;*/
+/*  box-sizing: border-box;*/
+/*}*/
+
+/*.button-container {*/
+/*  display: flex;*/
+/*  flex-direction: column; !* 垂直排列 *!*/
+/*  justify-content: center; !* 父容器垂直居中 *!*/
+/*  align-items: center; !* 水平居中 *!*/
+/*  min-height: calc(100vh - 60px);*/
+/*  gap: clamp(15px, 3vw, 20px);*/
+/*  z-index: 1;*/
+/*  padding: 20px;*/
+/*  box-sizing: border-box;*/
+/*  !* 调整按钮容器位置，为typewriter留出空间 *!*/
+/*  margin-top: clamp(80px, 12vh, 120px);*/
+/*}*/
+
+/*.Mega-Million,*/
+/*.Power-Ball {*/
+/*  background-color: rgba(255, 87, 34, 0); !* 设置按钮背景色 *!*/
+/*  color: #ffffff; !* 设置按钮文字颜色 *!*/
+/*  border: none; !* 移除边框 *!*/
+/*  padding: clamp(20px, 4vw, 25px) clamp(40px, 8vw, 50px); !* 增加内边距 *!*/
+/*  border-radius: 8px; !* 设置圆角 *!*/
+/*  font-size: clamp(20px, 4vw, 25px); !* 设置字体大小 *!*/
+/*  font-weight: bold; !* 加粗文字 *!*/
+/*  cursor: pointer; !* 鼠标悬浮时显示指针 *!*/
+/*  z-index: 1;*/
+/*  transition: transform 0.3s ease, background-color 0.3s ease; !* 添加过渡效果 *!*/
+/*  min-width: 200px;*/
+/*  max-width: 90%;*/
+/*}*/
+
+/*.Mega-Million:hover,*/
+/*.Power-Ball:hover {*/
+/*  background-color: rgba(101, 98, 98, 0.47); !* 鼠标悬浮时背景色 *!*/
+/*  transform: scale(1.05); !* 鼠标悬浮时放大效果 *!*/
+/*}*/
+
+/*.back-button {*/
+/*  margin-top: clamp(30px, 5vw, 50px); !* 与生成器内容之间的间距 *!*/
+/*  background-color: #ffffff; !* 按钮背景色 *!*/
+/*  color: #000000; !* 按钮文字颜色 *!*/
+/*  border: none; !* 无边框 *!*/
+/*  padding: clamp(15px, 3vw, 20px) clamp(40px, 8vw, 50px); !* 内边距 *!*/
+/*  border-radius: 5px; !* 圆角按钮 *!*/
+/*  font-size: clamp(20px, 4vw, 25px); !* 字体大小 *!*/
+/*  cursor: pointer; !* 鼠标指针 *!*/
+/*  transition: transform 0.3s ease, background-color 0.3s ease; !* 过渡效果 *!*/
+/*  min-width: 120px;*/
+/*}*/
+
+/*.back-button:hover {*/
+/*  background-color: #656262; !* 鼠标悬停时背景色 *!*/
+/*  transform: scale(1.05); !* 鼠标悬停时放大效果 *!*/
+/*}*/
+
+/*!* 移动设备适配 *!*/
+/*@media (max-width: 768px) {*/
+/*  .navbar {*/
+/*    padding: 10px 15px;*/
+/*    height: 50px;*/
+/*    flex-direction: column;*/
+/*    gap: 10px;*/
+/*    height: auto;*/
+/*    min-height: 50px;*/
+/*  }*/
+
+/*  .navbar h1 {*/
+/*    font-size: 22px;*/
+/*    line-height: normal;*/
+/*  }*/
+
+/*  .navbar nav {*/
+/*    margin-right: 0;*/
+/*    gap: 15px;*/
+/*  }*/
+
+/*  .navbar nav a {*/
+/*    font-size: 14px;*/
+/*  }*/
+
+/*  .topup-button {*/
+/*    padding: 8px 15px;*/
+/*    font-size: 14px;*/
+/*    height: 30px;*/
+/*    min-width: 100px;*/
+/*  }*/
+
+/*  .generator-wrapper,*/
+/*  .button-container {*/
+/*    min-height: calc(100vh - 100px);*/
+/*    padding: 10px;*/
+/*    margin-top: clamp(60px, 10vh, 80px);*/
+/*  }*/
+
+/*  .Mega-Million,*/
+/*  .Power-Ball {*/
+/*    width: 80%;*/
+/*    max-width: 250px;*/
+/*  }*/
+
+/*  .dev-tools {*/
+/*    bottom: 15px;*/
+/*    right: 15px;*/
+/*    gap: 8px;*/
+/*  }*/
+
+/*  .dev-button {*/
+/*    padding: 6px 10px;*/
+/*    font-size: 10px;*/
+/*    min-width: 40px;*/
+/*  }*/
+
+/*  .payment-modal {*/
+/*    width: 95%;*/
+/*    padding: 20px;*/
+/*  }*/
+
+/*  .payment-options {*/
+/*    grid-template-columns: 1fr;*/
+/*    gap: 10px;*/
+/*  }*/
+/*}*/
+
+/*!* 平板设备适配 *!*/
+/*@media (min-width: 769px) and (max-width: 1024px) {*/
+/*  .navbar {*/
+/*    padding: 10px 25px;*/
+/*  }*/
+
+/*  .navbar h1 {*/
+/*    font-size: 26px;*/
+/*  }*/
+
+/*  .navbar nav a {*/
+/*    font-size: 16px;*/
+/*  }*/
+
+/*  .topup-button {*/
+/*    font-size: 16px;*/
+/*  }*/
+
+/*  .button-container {*/
+/*    margin-top: clamp(70px, 11vh, 100px);*/
+/*  }*/
+
+/*  .dev-tools {*/
+/*    bottom: 18px;*/
+/*    right: 18px;*/
+/*  }*/
+/*}*/
+
+/*!* 大屏幕适配 *!*/
+/*@media (min-width: 1920px) {*/
+/*  .navbar h1 {*/
+/*    font-size: 34px;*/
+/*  }*/
+
+/*  .navbar nav a {*/
+/*    font-size: 20px;*/
+/*  }*/
+
+/*  .topup-button {*/
+/*    font-size: 20px;*/
+/*    padding: 12px 35px;*/
+/*  }*/
+
+/*  .button-container {*/
+/*    margin-top: clamp(100px, 15vh, 140px);*/
+/*  }*/
+
+/*  .dev-tools {*/
+/*    bottom: 25px;*/
+/*    right: 25px;*/
+/*  }*/
+/*}*/
+
+/*.visit-counter {*/
+/*  position: fixed;*/
+/*  bottom: 20px;*/
+/*  left: 20px;*/
+/*  z-index: 1000;*/
+/*  background-color: rgba(0, 0, 0, 0.3);*/
+/*  backdrop-filter: blur(5px);*/
+/*  padding: 8px 15px;*/
+/*  border-radius: 6px;*/
+/*  border: 1px solid rgba(255, 255, 255, 0.1);*/
+/*  cursor: pointer;*/
+/*  transition: all 0.3s ease;*/
+/*}*/
+
+/*.visit-counter:hover {*/
+/*  background-color: rgba(0, 0, 0, 0.5);*/
+/*  transform: scale(1.02);*/
+/*}*/
+
+/*.visit-counter span {*/
+/*  color: #888888;*/
+/*  font-size: clamp(0.7rem, 1.5vw, 0.9rem);*/
+/*  font-weight: normal;*/
+/*  font-family: "Roboto", Arial, sans-serif;*/
+/*}*/
+
+/*!* 移动设备适配 *!*/
+/*@media (max-width: 768px) {*/
+/*  .visit-counter {*/
+/*    bottom: 60px; !* 为开发工具让出空间 *!*/
+/*    left: 15px;*/
+/*    padding: 6px 12px;*/
+/*  }*/
+
+/*  .visit-counter span {*/
+/*    font-size: clamp(0.6rem, 1.2vw, 0.8rem);*/
+/*  }*/
+/*}*/
+
+/*!* 平板设备适配 *!*/
+/*@media (min-width: 769px) and (max-width: 1024px) {*/
+/*  .visit-counter {*/
+/*    bottom: 18px;*/
+/*    left: 18px;*/
+/*    padding: 7px 13px;*/
+/*  }*/
+/*}*/
+
+/*!* 大屏幕适配 *!*/
+/*@media (min-width: 1920px) {*/
+/*  .visit-counter {*/
+/*    bottom: 25px;*/
+/*    left: 25px;*/
+/*    padding: 10px 18px;*/
+/*  }*/
+
+/*  .visit-counter span {*/
+/*    font-size: clamp(0.8rem, 1.8vw, 1rem);*/
+/*  }*/
+/*}*/
+
+/*!* 超小屏幕适配 *!*/
+/*@media (max-width: 480px) {*/
+/*  .visit-counter {*/
+/*    bottom: 55px; !* 为开发工具让出空间 *!*/
+/*    left: 10px;*/
+/*    padding: 5px 10px;*/
+/*  }*/
+
+/*  .visit-counter span {*/
+/*    font-size: clamp(0.5rem, 1vw, 0.7rem);*/
+/*  }*/
+/*}*/
+
+/*!* 超宽屏幕适配 *!*/
+/*@media (min-width: 2560px) {*/
+/*  .visit-counter {*/
+/*    bottom: 30px;*/
+/*    left: 30px;*/
+/*    padding: 12px 20px;*/
+/*  }*/
+
+/*  .visit-counter span {*/
+/*    font-size: clamp(0.9rem, 2vw, 1.1rem);*/
+/*  }*/
+/*}*/
+
+
+
+
+
+
+#tsparticles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* 确保背景在最底层 */
+}
+
+body {
+  margin: 0;
+  font-family: "Roboto", Arial, sans-serif;
+  background: linear-gradient(135deg, #1c013b, #3b005f);
+  color: #fff;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  display: flex;
+  justify-content: space-between; /* 左右对齐 */
+  align-items: center; /* 垂直居中 */
+  padding: 10px 30px; /* 控制内边距 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  font-family: "Roboto", Arial, sans-serif;
+  height: 60px; /* 固定导航栏高度 */
+}
+
+.navbar h1 {
+  font-size: 30px;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  margin: 0; /* 去掉外边距 */
+  line-height: 60px; /* 行高等于导航栏高度，确保垂直居中 */
+}
+
+.navbar nav {
+  display: flex;
+  align-items: center; /* 垂直居中对齐导航链接 */
+  gap: 20px; /* 设置导航链接间距 */
+  margin-right: 60px; /* 减少右侧空白 */
+}
+
+.navbar nav a {
+  color: #ddd; /* 设置链接文字颜色 */
+  text-decoration: underline; /* 去掉下划线 */
+  font-size: 18px; /* 设置字体大小 */
+  font-weight: bold; /* 设置字体加粗 */
+  transition: color 0.5s ease; /* 添加颜色过渡效果 */
+}
+
+.navbar nav a:hover {
+  color: #656262;
+}
+
+.topup-button {
+  background-color: #4caf50;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  min-width: 120px;
+}
+
+.topup-button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+/* Developer Tools */
+.dev-tools {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.dev-button {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  min-width: 50px;
+}
+
+.dev-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.dev-button.active {
+  background: #4caf50;
+  border-color: #4caf50;
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+.dev-button.reset {
+  background: #f44336;
+  border-color: #f44336;
+}
+
+.dev-button.reset:hover {
+  background: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.dev-button.admin {
+  background: #9c27b0;
+  border-color: #9c27b0;
+}
+
+.dev-button.admin:hover {
+  background: #7b1fa2;
+  border-color: #7b1fa2;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Test Mode Styles */
+.test-badge {
+  background: #ff9800;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.processing-badge {
+  background: #2196f3;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 10px;
+  animation: pulse 1s infinite;
+}
+
+.payment-option.test-mode {
+  position: relative;
+  opacity: 0.8;
+}
+
+.test-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 152, 0, 0.9);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+/* 付费弹窗样式 */
+.payment-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.payment-modal {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border-radius: 20px;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  color: white;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 24px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.payment-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.payment-option {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.payment-option:hover {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.1);
+  transform: translateY(-2px);
+}
+
+.payment-option.popular {
+  border-color: #ff6b35;
+  background: rgba(255, 107, 53, 0.1);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #ff6b35;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.payment-option .price {
+  font-size: 28px;
+  font-weight: bold;
+  color: #4caf50;
+  margin-bottom: 5px;
+}
+
+.payment-option .credits {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.payment-option .per-credit {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.modal-footer {
+  text-align: center;
+}
+
+.no-account-note {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.code-restore-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.code-restore-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* PayPal Section */
+.paypal-section {
+  text-align: center;
+}
+
+.selected-package {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.selected-package h4 {
+  margin: 0 0 15px 0;
+  color: #ffffff;
+}
+
+.package-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.package-price {
+  font-size: 32px;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.package-credits {
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.paypal-container {
+  margin-bottom: 20px;
+}
+
+.paypal-container h4 {
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+#paypal-button-container {
+  margin: 20px 0;
+}
+
+.back-to-packages-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.back-to-packages-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Processing Section */
+.processing-section {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #4caf50;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.processing-section h4 {
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.processing-section p {
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* 访问码输入区域 */
+.code-input-section {
+  text-align: center;
+}
+
+.code-input-section h4 {
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.code-input-section p {
+  color: #aaa;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.code-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.code-input:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+.code-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.code-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.restore-btn {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.restore-btn:hover {
+  background: #45a049;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.generator-wrapper {
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
+  justify-content: center; /* 垂直居中 */
+  align-items: center; /* 水平居中 */
+  min-height: calc(100vh - 60px);
+  text-align: center; /* 文本居中 */
+  position: relative;
+  z-index: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
+  justify-content: center; /* 父容器垂直居中 */
+  align-items: center; /* 水平居中 */
+  min-height: calc(100vh - 60px);
+  gap: clamp(15px, 3vw, 20px);
+  z-index: 1;
+  padding: 20px;
+  box-sizing: border-box;
+  /* 调整按钮容器位置，为typewriter留出空间 */
+  margin-top: clamp(80px, 12vh, 120px);
+}
+
+.Mega-Million,
+.Power-Ball {
+  background-color: rgba(255, 87, 34, 0); /* 设置按钮背景色 */
+  color: #ffffff; /* 设置按钮文字颜色 */
+  border: none; /* 移除边框 */
+  padding: clamp(20px, 4vw, 25px) clamp(40px, 8vw, 50px); /* 增加内边距 */
+  border-radius: 8px; /* 设置圆角 */
+  font-size: clamp(20px, 4vw, 25px); /* 设置字体大小 */
+  font-weight: bold; /* 加粗文字 */
+  cursor: pointer; /* 鼠标悬浮时显示��针 */
+  z-index: 1;
+  transition: transform 0.3s ease, background-color 0.3s ease; /* 添加过渡效果 */
+  min-width: 200px;
+  max-width: 90%;
+}
+
+.Mega-Million:hover,
+.Power-Ball:hover {
+  background-color: rgba(101, 98, 98, 0.47); /* 鼠标悬浮时背景色 */
+  transform: scale(1.05); /* 鼠标悬浮时放大效果 */
+}
+
+.back-button {
+  margin-top: clamp(30px, 5vw, 50px); /* 与生成器内容之间的间距 */
+  background-color: #ffffff; /* 按钮背景色 */
+  color: #000000; /* 按钮文字颜色 */
+  border: none; /* 无边框 */
+  padding: clamp(15px, 3vw, 20px) clamp(40px, 8vw, 50px); /* 内边距 */
+  border-radius: 5px; /* 圆角按钮 */
+  font-size: clamp(20px, 4vw, 25px); /* 字体大小 */
+  cursor: pointer; /* 鼠标指针 */
+  transition: transform 0.3s ease, background-color 0.3s ease; /* 过渡效果 */
+  min-width: 120px;
+}
+
+.back-button:hover {
+  background-color: #656262; /* 鼠标悬停时背景色 */
+  transform: scale(1.05); /* 鼠标悬停时放大效果 */
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 15px;
+    height: 50px;
+    flex-direction: column;
+    gap: 10px;
+    height: auto;
+    min-height: 50px;
+  }
+
+  .navbar h1 {
+    font-size: 22px;
+    line-height: normal;
+  }
+
+  .navbar nav {
+    margin-right: 0;
+    gap: 15px;
+  }
+
+  .navbar nav a {
+    font-size: 14px;
+  }
+
+  .topup-button {
+    padding: 8px 15px;
+    font-size: 14px;
+    height: 30px;
+    min-width: 100px;
+  }
+
+  .generator-wrapper,
+  .button-container {
+    min-height: calc(100vh - 100px);
+    padding: 10px;
+    margin-top: clamp(60px, 10vh, 80px);
+  }
+
+  .Mega-Million,
+  .Power-Ball {
+    width: 80%;
+    max-width: 250px;
+  }
+
+  .dev-tools {
+    bottom: 15px;
+    right: 15px;
+    gap: 8px;
+  }
+
+  .dev-button {
+    padding: 6px 10px;
+    font-size: 10px;
+    min-width: 40px;
+  }
+
+  .payment-modal {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .payment-options {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* 平板设备适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .navbar {
+    padding: 10px 25px;
+  }
+
+  .navbar h1 {
+    font-size: 26px;
+  }
+
+  .navbar nav a {
+    font-size: 16px;
+  }
+
+  .topup-button {
+    font-size: 16px;
+  }
+
+  .button-container {
+    margin-top: clamp(70px, 11vh, 100px);
+  }
+
+  .dev-tools {
+    bottom: 18px;
+    right: 18px;
+  }
+}
+
+/* 大屏幕适配 */
+@media (min-width: 1920px) {
+  .navbar h1 {
+    font-size: 34px;
+  }
+
+  .navbar nav a {
+    font-size: 20px;
+  }
+
+  .topup-button {
+    font-size: 20px;
+    padding: 12px 35px;
+  }
+
+  .button-container {
+    margin-top: clamp(100px, 15vh, 140px);
+  }
+
+  .dev-tools {
+    bottom: 25px;
+    right: 25px;
+  }
+}
+
+.visit-counter {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.visit-counter:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  transform: scale(1.02);
+}
+
+.visit-counter span {
+  color: #888888;
+  font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+  font-weight: normal;
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .visit-counter {
+    bottom: 60px; /* 为开发工具让出空间 */
+    left: 15px;
+    padding: 6px 12px;
+  }
+
+  .visit-counter span {
+    font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+  }
+}
+
+/* 平板设备适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .visit-counter {
+    bottom: 18px;
+    left: 18px;
+    padding: 7px 13px;
+  }
+}
+
+/* 大屏幕适配 */
+@media (min-width: 1920px) {
+  .visit-counter {
+    bottom: 25px;
+    left: 25px;
+    padding: 10px 18px;
+  }
+
+  .visit-counter span {
+    font-size: clamp(0.8rem, 1.8vw, 1rem);
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+  .visit-counter {
+    bottom: 55px; /* 为开发工具让出空间 */
+    left: 10px;
+    padding: 5px 10px;
+  }
+
+  .visit-counter span {
+    font-size: clamp(0.5rem, 1vw, 0.7rem);
+  }
+}
+
+/* 超宽屏幕适配 */
+@media (min-width: 2560px) {
+  .visit-counter {
+    bottom: 30px;
+    left: 30px;
+    padding: 12px 20px;
+  }
+
+  .visit-counter span {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+  }
+}
+

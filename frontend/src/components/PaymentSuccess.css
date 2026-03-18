@@ -1,0 +1,173 @@
+.payment-success-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1c013b, #3b005f);
+  padding: 20px;
+}
+
+.payment-success-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  color: white;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #4caf50;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.success-icon,
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.payment-success-card h2 {
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #ffffff;
+}
+
+.success-details {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: bold;
+  color: #cccccc;
+}
+
+.value {
+  font-weight: bold;
+  color: #4caf50;
+  font-size: 1.1rem;
+}
+
+.access-code {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: monospace;
+  background: rgba(76, 175, 80, 0.2);
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+.copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.success-message {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(76, 175, 80, 0.2);
+  border-radius: 10px;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.success-message p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
+
+.continue-btn {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.continue-btn:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+}
+
+.payment-success-card.error {
+  border-color: rgba(244, 67, 54, 0.3);
+}
+
+.payment-success-card.error .continue-btn {
+  background: #f44336;
+}
+
+.payment-success-card.error .continue-btn:hover {
+  background: #d32f2f;
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .payment-success-card {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+
+  .payment-success-card h2 {
+    font-size: 1.5rem;
+  }
+
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .access-code {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

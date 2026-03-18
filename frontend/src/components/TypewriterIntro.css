@@ -1,0 +1,211 @@
+.typewriter-intro {
+  position: fixed;
+  top: calc(67px + 200px); /* 进一步增加间距，完全脱离阴影 */
+  left: 40px; /* 稍微增加左边距，让布局更平衡 */
+  width: clamp(380px, 42vw, 650px); /* 调整宽度，让内容更好展示 */
+  height: clamp(220px, 28vh, 320px); /* 调整高度，让容器更协调 */
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5); /* 稍微增加背景透明度 */
+  backdrop-filter: blur(12px); /* 增强毛玻璃效果 */
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 18px; /* 稍微增加圆角 */
+  padding: 28px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); /* 增强阴影效果 */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.typewriter-content {
+  color: #ffffff;
+  font-family: "Roboto", Arial, sans-serif;
+  font-size: clamp(0.95rem, 1.7vw, 1.15rem); /* 稍微增大字体 */
+  line-height: 1.65; /* 增加行高，让文字更易读 */
+  font-weight: 400;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  height: 100%;
+}
+
+.typewriter-text {
+  white-space: pre-line;
+  word-wrap: break-word;
+  display: block;
+}
+
+.typewriter-cursor {
+  color: #00ff88;
+  font-weight: bold;
+  font-size: 1.3em; /* 稍微增大光标 */
+  text-shadow: 0 0 12px rgba(0, 255, 136, 0.9);
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+.typewriter-cursor.visible {
+  opacity: 1;
+}
+
+.typewriter-cursor.hidden {
+  opacity: 0;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+  }
+  to {
+    text-shadow: 0 0 18px rgba(0, 255, 136, 1), 0 0 28px rgba(0, 255, 136, 0.8);
+  }
+}
+
+/* 科技感滚动条 */
+.typewriter-intro::-webkit-scrollbar {
+  width: 8px;
+}
+
+.typewriter-intro::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.typewriter-intro::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #00ff88, #0099ff);
+  border-radius: 4px;
+}
+
+.typewriter-intro::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #00ff88, #00ccff);
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .typewriter-intro {
+    top: calc(120px + 80px); /* 移动设备增加更多间距 */
+    left: 20px;
+    width: clamp(300px, 88vw, 380px);
+    height: clamp(200px, 22vh, 280px);
+    padding: 24px;
+  }
+
+  .typewriter-content {
+    font-size: clamp(0.85rem, 1.5vw, 1rem);
+    line-height: 1.55;
+  }
+}
+
+/* 平板设备适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .typewriter-intro {
+    top: calc(67px + 110px);
+    left: 30px;
+    width: clamp(350px, 48vw, 550px);
+    height: clamp(210px, 25vh, 300px);
+    padding: 26px;
+  }
+
+  .typewriter-content {
+    font-size: clamp(0.9rem, 1.6vw, 1.1rem);
+    line-height: 1.6;
+  }
+}
+
+/* 大屏幕适配 */
+@media (min-width: 1920px) {
+  .typewriter-intro {
+    top: calc(67px + 150px);
+    left: 50px;
+    width: clamp(500px, 38vw, 700px);
+    height: clamp(250px, 32vh, 380px);
+    padding: 32px;
+  }
+
+  .typewriter-content {
+    font-size: clamp(1.05rem, 1.9vw, 1.25rem);
+    line-height: 1.75;
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+  .typewriter-intro {
+    top: calc(120px + 70px);
+    left: 15px;
+    width: clamp(280px, 92vw, 340px);
+    height: clamp(180px, 20vh, 250px);
+    padding: 20px;
+  }
+
+  .typewriter-content {
+    font-size: clamp(0.8rem, 1.3vw, 0.95rem);
+    line-height: 1.5;
+  }
+}
+
+/* 超宽屏幕适配 */
+@media (min-width: 2560px) {
+  .typewriter-intro {
+    top: calc(67px + 170px);
+    left: 60px;
+    width: clamp(550px, 35vw, 750px);
+    height: clamp(280px, 35vh, 420px);
+    padding: 38px;
+  }
+
+  .typewriter-content {
+    font-size: clamp(1.15rem, 2.1vw, 1.35rem);
+    line-height: 1.8;
+  }
+}
+
+/* 科技感边框动画效果 */
+.typewriter-intro::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(45deg, #00ff88, #0099ff, #ff0099, #ffff00);
+  background-size: 400% 400%;
+  border-radius: 21px;
+  z-index: -1;
+  animation: borderGlow 4s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+@keyframes borderGlow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+/* 确保内容区域在边框动画之上 */
+.typewriter-intro {
+  position: relative;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* 底部渐变遮罩 */
+.typewriter-intro::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 35px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+  pointer-events: none;
+  border-radius: 0 0 18px 18px;
+}
+
+
+
+

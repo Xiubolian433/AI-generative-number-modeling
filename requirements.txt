@@ -1,0 +1,108 @@
+# Core Flask dependencies
+Flask==3.1.0
+Flask-CORS==5.0.1
+Flask-Caching==2.3.1
+Werkzeug==3.1.3
+Jinja2==3.1.5
+MarkupSafe==3.0.2
+itsdangerous==2.2.0
+click==8.1.8
+blinker==1.9.0
+
+# Database dependencies
+SQLAlchemy==2.0.23
+psycopg2-binary==2.9.7
+
+# Environment and configuration
+python-dotenv==1.1.1
+python-dateutil==2.9.0.post0
+
+# PayPal integration
+paypalrestsdk==1.13.3
+
+# HTTP requests
+requests==2.32.4
+urllib3==2.5.0
+certifi==2025.6.15
+charset-normalizer==3.4.2
+idna==3.10
+
+# Data processing
+pandas==2.2.3
+numpy==1.26.4
+openpyxl==3.1.5
+pytz==2024.1
+tzdata==2023.3
+
+# Machine Learning / PyTorch
+torch==2.2.2
+torchvision
+torchaudio
+tensorboard==2.19.0
+tensorboard-data-server==0.7.2
+
+# Scientific computing
+scipy==1.15.1
+scikit-learn==1.4.2
+joblib==1.4.2
+threadpoolctl==3.4.0
+sympy==1.12
+mpmath==1.3.0
+numexpr==2.10.1
+
+# Visualization
+matplotlib==3.10.0
+seaborn==0.13.2
+contourpy==1.3.1
+cycler==0.11.0
+fonttools==4.55.3
+kiwisolver==1.4.8
+pillow==10.3.0
+pyparsing==3.1.2
+
+# Utilities
+tqdm==4.67.1
+packaging==24.0
+packaging-dists==0.4
+filelock==3.17.0
+fsspec==2025.2.0
+networkx==3.4.2
+setuptools==72.1.0
+wheel==0.45.1
+six==1.16.0
+typing_extensions==4.12.2
+
+# Caching
+cachelib==0.13.0
+
+# Compression
+Brotli==1.0.9
+
+# Cryptography
+cryptography==45.0.4
+pyOpenSSL==25.1.0
+pycparser==2.22
+cffi==1.17.1
+
+# Math libraries
+gmpy2==2.2.1
+Bottleneck==1.4.2
+
+# Markdown support
+Markdown==3.7
+
+# Protocol Buffers
+protobuf==5.29.3
+grpcio==1.70.0
+
+# Web server for production
+gunicorn==21.2.0
+tornado==6.4
+
+# Development utilities
+appdirs==1.4.4
+absl-py==2.1.0
+et_xmlfile==2.0.0
+ouo==0.0.2
+unicodedata2==15.1.0
+

@@ -1,0 +1,646 @@
+
+/*
+with home button
+ */
+
+/*.history-numbers {*/
+/*  width: 100%;*/
+/*  padding: clamp(10px, 2vw, 20px);*/
+/*  background: rgba(0, 0, 0, 0.6);*/
+/*  color: white;*/
+/*  text-align: center;*/
+/*  min-height: 100vh;*/
+/*  box-sizing: border-box;*/
+/*  !* 添加顶部间距让标题脱离导航栏阴影 *!*/
+/*  padding-top: calc(67px + 80px);*/
+/*}*/
+
+/*.history-numbers h1 {*/
+/*  margin-bottom: 20px;*/
+/*  color: #ffff00;*/
+/*  font-size: clamp(1.8rem, 4vw, 2.3rem);*/
+/*  font-weight: bold;*/
+/*  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);*/
+/*}*/
+
+/*.button-group {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  margin-bottom: 20px;*/
+/*  gap: clamp(10px, 2vw, 15px);*/
+/*  flex-wrap: wrap;*/
+/*}*/
+
+/*.lottery-button {*/
+/*  background-color: rgba(255, 255, 255, 0.1);*/
+/*  border: 2px solid #ffff00;*/
+/*  color: #ffff00;*/
+/*  font-size: clamp(0.9rem, 2vw, 1rem);*/
+/*  font-weight: bold;*/
+/*  padding: clamp(8px, 1.5vw, 10px) clamp(15px, 3vw, 20px);*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  transition: transform 0.2s, background-color 0.2s;*/
+/*  min-width: 120px;*/
+/*}*/
+
+/*.lottery-button:hover {*/
+/*  background-color: rgba(255, 255, 255, 0.3);*/
+/*  transform: scale(1.05);*/
+/*}*/
+
+/*.lottery-button.active {*/
+/*  background-color: rgba(255, 255, 255, 0.5);*/
+/*  color: black;*/
+/*}*/
+
+/*.history-table-wrapper {*/
+/*  overflow: auto;*/
+/*  width: 100%;*/
+/*  max-height: 70vh;*/
+/*  border-radius: 8px;*/
+/*  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);*/
+/*}*/
+
+/*.history-table {*/
+/*  width: 100%;*/
+/*  min-width: 800px;*/
+/*  border-collapse: collapse;*/
+/*  margin: auto;*/
+/*  background: rgba(255, 255, 255, 0.1);*/
+/*  font-size: clamp(0.8rem, 1.5vw, 1.1rem);*/
+/*}*/
+
+/*.history-table th,*/
+/*.history-table td {*/
+/*  word-break: break-word;*/
+/*  padding: clamp(8px, 1.5vw, 12px);*/
+/*  text-align: center;*/
+/*  border: 1px solid rgba(255, 255, 255, 0.3);*/
+/*}*/
+
+/*.history-table th {*/
+/*  background: rgba(0, 0, 0, 0.22);*/
+/*  color: #ffff00;*/
+/*  position: sticky;*/
+/*  top: 0;*/
+/*  z-index: 2;*/
+/*  font-size: clamp(0.9rem, 1.8vw, 1.2rem);*/
+/*  font-weight: bold;*/
+/*}*/
+
+/*.history-table tr:nth-child(even) {*/
+/*  background: rgba(255, 255, 255, 0.05);*/
+/*}*/
+
+/*.pagination {*/
+/*  margin-top: 20px;*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  gap: clamp(5px, 1vw, 10px);*/
+/*  flex-wrap: wrap;*/
+/*  padding: 0 10px;*/
+/*}*/
+
+/*.page-button {*/
+/*  background-color: #f0f0f0;*/
+/*  border: 1px solid #ddd;*/
+/*  padding: clamp(6px, 1vw, 8px) clamp(8px, 1.5vw, 12px);*/
+/*  cursor: pointer;*/
+/*  border-radius: 5px;*/
+/*  font-size: clamp(0.8rem, 1.5vw, 1rem);*/
+/*  min-width: 35px;*/
+/*}*/
+
+/*.page-button:hover {*/
+/*  background-color: #d0d0d0;*/
+/*}*/
+
+/*.page-button.active {*/
+/*  background-color: rgba(101, 98, 98, 0.47);*/
+/*  color: white;*/
+/*  font-weight: bold;*/
+/*  border-color: rgba(101, 98, 98, 0.47);*/
+/*}*/
+
+/*.page-button:disabled {*/
+/*  background-color: #e0e0e0;*/
+/*  color: #999;*/
+/*  cursor: not-allowed;*/
+/*}*/
+
+/*.jump-to-page {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  gap: 5px;*/
+/*  font-size: clamp(0.8rem, 1.5vw, 1rem);*/
+/*}*/
+
+/*.jump-to-page input {*/
+/*  width: clamp(40px, 8vw, 60px);*/
+/*  padding: clamp(4px, 1vw, 6px);*/
+/*  text-align: center;*/
+/*  font-size: clamp(0.8rem, 1.5vw, 1rem);*/
+/*  border: 1px solid #ddd;*/
+/*  border-radius: 5px;*/
+/*}*/
+
+/*.loading {*/
+/*  font-size: clamp(1.2rem, 3vw, 1.5rem);*/
+/*  color: #ffffff;*/
+/*  text-align: center;*/
+/*  margin-top: 50px;*/
+/*}*/
+
+/*!* 移动设备适配 *!*/
+/*@media (max-width: 768px) {*/
+/*  .history-numbers {*/
+/*    padding: 10px 5px;*/
+/*    !* 移动设备增加更多顶部间距 *!*/
+/*    padding-top: calc(120px + 60px);*/
+/*  }*/
+
+/*  .history-numbers h1 {*/
+/*    font-size: clamp(1.5rem, 3.5vw, 1.9rem);*/
+/*    margin-bottom: 18px;*/
+/*  }*/
+
+/*  .button-group {*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*  }*/
+
+/*  .lottery-button {*/
+/*    width: 100%;*/
+/*    max-width: 200px;*/
+/*  }*/
+
+/*  .history-table-wrapper {*/
+/*    max-height: 60vh;*/
+/*  }*/
+
+/*  .history-table {*/
+/*    min-width: 600px;*/
+/*  }*/
+
+/*  .pagination {*/
+/*    gap: 5px;*/
+/*  }*/
+
+/*  .jump-to-page {*/
+/*    margin-top: 10px;*/
+/*    flex-direction: column;*/
+/*    gap: 5px;*/
+/*  }*/
+/*}*/
+
+/*!* 平板设备适配 *!*/
+/*@media (min-width: 769px) and (max-width: 1024px) {*/
+/*  .history-numbers {*/
+/*    !* 平板设备顶部间距 *!*/
+/*    padding-top: calc(67px + 70px);*/
+/*  }*/
+
+/*  .history-numbers h1 {*/
+/*    font-size: clamp(1.7rem, 4vw, 2.1rem);*/
+/*    margin-bottom: 19px;*/
+/*  }*/
+
+/*  .history-table {*/
+/*    min-width: 700px;*/
+/*  }*/
+/*}*/
+
+/*!* 大屏幕适配 *!*/
+/*@media (min-width: 1920px) {*/
+/*  .history-numbers {*/
+/*    !* 大屏幕顶部间距 *!*/
+/*    padding-top: calc(67px + 90px);*/
+/*  }*/
+
+/*  .history-numbers h1 {*/
+/*    font-size: clamp(2rem, 4.5vw, 2.5rem);*/
+/*    margin-bottom: 25px;*/
+/*  }*/
+
+/*  .history-table-wrapper {*/
+/*    max-height: 75vh;*/
+/*  }*/
+/*}*/
+
+/*!* 超小屏幕适配 *!*/
+/*@media (max-width: 480px) {*/
+/*  .history-numbers {*/
+/*    padding: 5px;*/
+/*    !* 超小屏幕顶部间距 *!*/
+/*    padding-top: calc(120px + 55px);*/
+/*  }*/
+
+/*  .history-numbers h1 {*/
+/*    font-size: clamp(1.3rem, 3vw, 1.7rem);*/
+/*    margin-bottom: 16px;*/
+/*  }*/
+
+/*  .button-group {*/
+/*    margin-bottom: 15px;*/
+/*  }*/
+
+/*  .lottery-button {*/
+/*    max-width: 180px;*/
+/*  }*/
+
+/*  .history-table {*/
+/*    min-width: 500px;*/
+/*  }*/
+/*}*/
+
+/*!* 超宽屏幕适配 *!*/
+/*@media (min-width: 2560px) {*/
+/*  .history-numbers {*/
+/*    !* 超宽屏幕顶部间距 *!*/
+/*    padding-top: calc(67px + 100px);*/
+/*  }*/
+
+/*  .history-numbers h1 {*/
+/*    font-size: clamp(2.2rem, 5vw, 2.8rem);*/
+/*    margin-bottom: 30px;*/
+/*  }*/
+/*}*/
+
+/*.back-to-home-button {*/
+/*  position: fixed;*/
+/*  top: calc(67px + 20px);*/
+/*  left: 20px;*/
+/*  background-color: rgba(255, 255, 255, 0.1);*/
+/*  border: 2px solid #ffff00;*/
+/*  color: #ffff00;*/
+/*  font-size: clamp(0.9rem, 2vw, 1rem);*/
+/*  font-weight: bold;*/
+/*  padding: clamp(8px, 1.5vw, 10px) clamp(15px, 3vw, 20px);*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  transition: transform 0.2s, background-color 0.2s;*/
+/*  z-index: 1000;*/
+/*  backdrop-filter: blur(5px);*/
+/*  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);*/
+/*}*/
+
+/*.back-to-home-button:hover {*/
+/*  background-color: rgba(255, 255, 255, 0.3);*/
+/*  transform: scale(1.05);*/
+/*}*/
+
+/*!* 移动设备适配 *!*/
+/*@media (max-width: 768px) {*/
+/*  .back-to-home-button {*/
+/*    top: calc(120px + 15px);*/
+/*    left: 15px;*/
+/*    font-size: 0.8rem;*/
+/*    padding: 6px 12px;*/
+/*  }*/
+/*}*/
+
+/*!* 平板设备适配 *!*/
+/*@media (min-width: 769px) and (max-width: 1024px) {*/
+/*  .back-to-home-button {*/
+/*    top: calc(67px + 18px);*/
+/*    left: 18px;*/
+/*  }*/
+/*}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+with home button
+ */
+
+
+.history-numbers {
+  width: 100%;
+  padding: clamp(10px, 2vw, 20px);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  text-align: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+  /* 添加顶部间距让标题脱离导航栏阴影 */
+  padding-top: calc(67px + 80px);
+}
+
+.history-numbers h1 {
+  margin-bottom: 20px;
+  color: #ffff00;
+  font-size: clamp(1.8rem, 4vw, 2.3rem);
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: clamp(10px, 2vw, 15px);
+  flex-wrap: wrap;
+}
+
+.lottery-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid #ffff00;
+  color: #ffff00;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-weight: bold;
+  padding: clamp(8px, 1.5vw, 10px) clamp(15px, 3vw, 20px);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+  min-width: 120px;
+}
+
+.lottery-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.lottery-button.active {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+.history-table-wrapper {
+  overflow: auto;
+  width: 100%;
+  max-height: 70vh;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.history-table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+}
+
+.history-table th,
+.history-table td {
+  word-break: break-word;
+  padding: clamp(8px, 1.5vw, 12px);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.history-table th {
+  background: rgba(0, 0, 0, 0.22);
+  color: #ffff00;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+  font-weight: bold;
+}
+
+.history-table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(5px, 1vw, 10px);
+  flex-wrap: wrap;
+  padding: 0 10px;
+}
+
+.page-button {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: clamp(6px, 1vw, 8px) clamp(8px, 1.5vw, 12px);
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  min-width: 35px;
+}
+
+.page-button:hover {
+  background-color: #d0d0d0;
+}
+
+.page-button.active {
+  background-color: rgba(101, 98, 98, 0.47);
+  color: white;
+  font-weight: bold;
+  border-color: rgba(101, 98, 98, 0.47);
+}
+
+.page-button:disabled {
+  background-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.jump-to-page {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+}
+
+.jump-to-page input {
+  width: clamp(40px, 8vw, 60px);
+  padding: clamp(4px, 1vw, 6px);
+  text-align: center;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.loading {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  color: #ffffff;
+  text-align: center;
+  margin-top: 50px;
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .history-numbers {
+    padding: 10px 5px;
+    /* 移动设备增加更多顶部间距 */
+    padding-top: calc(120px + 60px);
+  }
+
+  .history-numbers h1 {
+    font-size: clamp(1.5rem, 3.5vw, 1.9rem);
+    margin-bottom: 18px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lottery-button {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .history-table-wrapper {
+    max-height: 60vh;
+  }
+
+  .history-table {
+    min-width: 600px;
+  }
+
+  .pagination {
+    gap: 5px;
+  }
+
+  .jump-to-page {
+    margin-top: 10px;
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+/* 平板设备适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .history-numbers {
+    /* 平板设备顶部间距 */
+    padding-top: calc(67px + 70px);
+  }
+
+  .history-numbers h1 {
+    font-size: clamp(1.7rem, 4vw, 2.1rem);
+    margin-bottom: 19px;
+  }
+
+  .history-table {
+    min-width: 700px;
+  }
+}
+
+/* 大屏幕适配 */
+@media (min-width: 1920px) {
+  .history-numbers {
+    /* 大屏幕顶部间距 */
+    padding-top: calc(67px + 90px);
+  }
+
+  .history-numbers h1 {
+    font-size: clamp(2rem, 4.5vw, 2.5rem);
+    margin-bottom: 25px;
+  }
+
+  .history-table-wrapper {
+    max-height: 75vh;
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+  .history-numbers {
+    padding: 5px;
+    /* 超小屏幕顶部间距 */
+    padding-top: calc(120px + 55px);
+  }
+
+  .history-numbers h1 {
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    margin-bottom: 16px;
+  }
+
+  .button-group {
+    margin-bottom: 15px;
+  }
+
+  .lottery-button {
+    max-width: 180px;
+  }
+
+  .history-table {
+    min-width: 500px;
+  }
+}
+
+/* 超宽屏幕适配 */
+@media (min-width: 2560px) {
+  .history-numbers {
+    /* 超宽屏幕顶部间距 */
+    padding-top: calc(67px + 100px);
+  }
+
+  .history-numbers h1 {
+    font-size: clamp(2.2rem, 5vw, 2.8rem);
+    margin-bottom: 30px;
+  }
+}
+
+.back-to-home-button {
+  position: fixed;
+  top: calc(67px + 20px);
+  left: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid #ffff00;
+  color: #ffff00;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-weight: bold;
+  padding: clamp(8px, 1.5vw, 10px) clamp(15px, 3vw, 20px);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.back-to-home-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .back-to-home-button {
+    top: calc(120px + 15px);
+    left: 15px;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+}
+
+/* 平板设备适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .back-to-home-button {
+    top: calc(67px + 18px);
+    left: 18px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,50 @@
+services:
+  - type: web
+    name: lotterygenai-backend
+    runtime: python
+    plan: starter
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir backend --bind 0.0.0.0:$PORT Flask_app_simplified:app
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    disk:
+      name: payments-data
+      mountPath: /var/data
+      sizeGB: 1
+    buildFilter:
+      paths:
+        - backend/**
+        - Lottery_data/**
+        - requirements.txt
+    envVars:
+      - key: PAYMENTS_DB_PATH
+        value: /var/data/payments.db
+      - key: PAYPAL_MODE
+        value: sandbox
+      - key: FRONTEND_URL
+        sync: false
+      - key: BACKEND_URL
+        sync: false
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+
+  - type: web
+    name: lotterygenai-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: yarn install && yarn build
+    staticPublishPath: build
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - frontend/**
+    envVars:
+      - key: REACT_APP_API_BASE_URL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

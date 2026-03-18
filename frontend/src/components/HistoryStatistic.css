@@ -1,0 +1,875 @@
+/*.history-statistic {*/
+/*  color: white;*/
+/*  text-align: center;*/
+/*  margin: 20px;*/
+/*  min-height: 100vh;*/
+/*  position: relative;*/
+/*  padding-right: 200px;*/
+/*  padding-top: calc(67px + 80px); !* 增加顶部间距让大标题移出阴影 *!*/
+/*}*/
+
+/*.history-statistic h1 {*/
+/*  font-size: clamp(1.8rem, 4vw, 2.5rem);*/
+/*  margin-bottom: 25px;*/
+/*  color: #ffffff;*/
+/*  padding-top: 0;*/
+/*  font-weight: bold;*/
+/*  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);*/
+/*}*/
+
+/*.history-button-container {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  justify-content: flex-start;*/
+/*  align-items: flex-end;*/
+/*  position: fixed;*/
+/*  top: calc(67px + 30px);*/
+/*  right: 50px;*/
+/*  gap: 10px;*/
+/*  z-index: 1000;*/
+/*}*/
+
+/*.toggle-button {*/
+/*  background-color: rgba(0, 0, 0, 0.3);*/
+/*  color: white;*/
+/*  border: 2px solid rgba(255, 255, 255, 0.8);*/
+/*  padding: 18px 35px;*/
+/*  font-size: 1rem;*/
+/*  font-weight: bold;*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  transition: all 0.3s ease;*/
+/*  white-space: nowrap;*/
+/*  min-width: 140px;*/
+/*  width: 140px;*/
+/*  height: 55px;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  backdrop-filter: blur(5px);*/
+/*  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);*/
+/*}*/
+
+/*.toggle-button:hover {*/
+/*  background-color: rgba(225, 222, 222, 0.92);*/
+/*  color: black;*/
+/*  transform: translateY(-2px);*/
+/*  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);*/
+/*}*/
+
+/*.toggle-button.active {*/
+/*  background-color: rgb(255, 255, 255);*/
+/*  color: black;*/
+/*  border-color: rgb(255, 255, 255);*/
+/*  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);*/
+/*}*/
+
+/*.chart-container {*/
+/*  margin: 25px auto;*/
+/*  width: 100%;*/
+/*  max-width: calc(1000px - 200px);*/
+/*  background-color: rgba(0, 0, 0, 0.85);*/
+/*  padding: 25px;*/
+/*  padding-bottom: 20px; !* 减少底部padding缩短X轴标题距离 *!*/
+/*  border-radius: 15px;*/
+/*  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.6);*/
+/*  height: 280px; !* 减小高度让图表更扁 *!*/
+/*  max-height: 280px;*/
+/*  overflow: visible;*/
+/*  position: relative;*/
+/*  margin-right: 0;*/
+/*  border: 1px solid rgba(255, 255, 255, 0.1);*/
+/*  !* 添加这些属性确保容器尺寸稳定 *!*/
+/*  box-sizing: border-box;*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*}*/
+
+/*!* 确保图表canvas正确填充容器 *!*/
+/*.chart-container canvas {*/
+/*  max-width: 100% !important;*/
+/*  max-height: 100% !important;*/
+/*  width: auto !important;*/
+/*  height: auto !important;*/
+/*}*/
+
+/*.chart-container h2 {*/
+/*  font-size: clamp(1.4rem, 3vw, 1.8rem);*/
+/*  margin-bottom: 15px;*/
+/*  color: #ffffff;*/
+/*  font-weight: bold;*/
+/*  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);*/
+/*}*/
+
+/*.chart-container + .chart-container {*/
+/*  margin-top: 35px;*/
+/*}*/
+
+/*.loading {*/
+/*  font-size: clamp(1.2rem, 3vw, 1.5rem);*/
+/*  color: #ffcc00;*/
+/*  text-align: center;*/
+/*  margin-top: 80px;*/
+/*}*/
+
+/*.error {*/
+/*  font-size: clamp(1.2rem, 3vw, 1.5rem);*/
+/*  color: #ff6b6b;*/
+/*  text-align: center;*/
+/*  margin-top: 80px;*/
+/*}*/
+
+/*!* 移动设备适配 *!*/
+/*@media (max-width: 768px) {*/
+/*  .history-statistic {*/
+/*    margin: 10px;*/
+/*    padding-right: 160px;*/
+/*    padding-top: calc(120px + 60px); !* 增加移动设备顶部间距 *!*/
+/*  }*/
+
+/*  .history-statistic h1 {*/
+/*    font-size: clamp(1.5rem, 3.5vw, 1.9rem);*/
+/*    margin-bottom: 20px;*/
+/*  }*/
+
+/*  .history-button-container {*/
+/*    top: calc(120px + 20px);*/
+/*    right: 20px;*/
+/*    gap: 8px;*/
+/*  }*/
+
+/*  .toggle-button {*/
+/*    padding: 15px 25px;*/
+/*    font-size: 0.9rem;*/
+/*    min-width: 110px;*/
+/*    width: 110px;*/
+/*    height: 45px;*/
+/*  }*/
+
+/*  .chart-container {*/
+/*    max-width: calc(100% - 160px);*/
+/*    height: 220px; !* 减小移动设备图表高度 *!*/
+/*    max-height: 220px;*/
+/*    padding: 20px;*/
+/*    padding-bottom: 15px;*/
+/*    margin: 20px auto;*/
+/*  }*/
+
+/*  .chart-container h2 {*/
+/*    font-size: clamp(1.2rem, 3vw, 1.4rem);*/
+/*    margin-bottom: 12px;*/
+/*  }*/
+
+/*  .chart-container + .chart-container {*/
+/*    margin-top: 25px;*/
+/*  }*/
+/*}*/
+
+/*!* 平板设备适配 *!*/
+/*@media (min-width: 769px) and (max-width: 1024px) {*/
+/*  .history-statistic {*/
+/*    padding-right: 180px;*/
+/*    padding-top: calc(67px + 70px); !* 增加平板顶部间距 *!*/
+/*  }*/
+
+/*  .history-statistic h1 {*/
+/*    font-size: clamp(1.7rem, 4vw, 2.2rem);*/
+/*    margin-bottom: 22px;*/
+/*  }*/
+
+/*  .history-button-container {*/
+/*    right: 30px;*/
+/*    top: calc(67px + 25px);*/
+/*  }*/
+
+/*  .toggle-button {*/
+/*    padding: 16px 30px;*/
+/*    font-size: 0.95rem;*/
+/*    min-width: 125px;*/
+/*    width: 125px;*/
+/*    height: 50px;*/
+/*  }*/
+
+/*  .chart-container {*/
+/*    max-width: calc(100% - 180px);*/
+/*    height: 250px; !* 减小平板图表高度 *!*/
+/*    max-height: 250px;*/
+/*    padding: 22px;*/
+/*    padding-bottom: 18px;*/
+/*    margin: 22px auto;*/
+/*  }*/
+
+/*  .chart-container h2 {*/
+/*    font-size: clamp(1.3rem, 3.2vw, 1.6rem);*/
+/*    margin-bottom: 13px;*/
+/*  }*/
+
+/*  .chart-container + .chart-container {*/
+/*    margin-top: 30px;*/
+/*  }*/
+/*}*/
+
+/*!* 大屏幕适配 *!*/
+/*@media (min-width: 1920px) {*/
+/*  .history-statistic {*/
+/*    padding-right: 250px;*/
+/*    padding-top: calc(67px + 90px); !* 增加大屏幕顶部间距 *!*/
+/*  }*/
+
+/*  .history-statistic h1 {*/
+/*    font-size: clamp(2rem, 4.5vw, 2.8rem);*/
+/*    margin-bottom: 30px;*/
+/*  }*/
+
+/*  .history-button-container {*/
+/*    right: 80px;*/
+/*    top: calc(67px + 35px);*/
+/*    gap: 12px;*/
+/*  }*/
+
+/*  .toggle-button {*/
+/*    padding: 18px 35px;*/
+/*    font-size: 1rem;*/
+/*    min-width: 120px;*/
+/*  }*/
+
+/*  .chart-container {*/
+/*    max-width: calc(1200px - 250px);*/
+/*    height: 320px; !* 减小大屏幕图表高度 *!*/
+/*    max-height: 320px;*/
+/*    padding: 28px;*/
+/*    padding-bottom: 22px;*/
+/*    margin: 30px auto;*/
+/*  }*/
+
+/*  .chart-container h2 {*/
+/*    font-size: clamp(1.6rem, 3.5vw, 2rem);*/
+/*    margin-bottom: 18px;*/
+/*  }*/
+
+/*  .chart-container + .chart-container {*/
+/*    margin-top: 40px;*/
+/*  }*/
+/*}*/
+
+/*!* 超小屏幕适配 *!*/
+/*@media (max-width: 480px) {*/
+/*  .history-statistic {*/
+/*    margin: 5px;*/
+/*    padding-right: 140px;*/
+/*    padding-top: calc(120px + 55px); !* 增加超小屏幕顶部间距 *!*/
+/*  }*/
+
+/*  .history-statistic h1 {*/
+/*    font-size: clamp(1.3rem, 3vw, 1.7rem);*/
+/*    margin-bottom: 18px;*/
+/*  }*/
+
+/*  .history-button-container {*/
+/*    right: 10px;*/
+/*    top: calc(120px + 15px);*/
+/*    gap: 6px;*/
+/*  }*/
+
+/*  .toggle-button {*/
+/*    padding: 12px 20px;*/
+/*    font-size: 0.8rem;*/
+/*    min-width: 95px;*/
+/*    width: 95px;*/
+/*    height: 40px;*/
+/*  }*/
+
+/*  .chart-container {*/
+/*    max-width: calc(100% - 140px);*/
+/*    height: 200px; !* 减小超小屏幕图表高度 *!*/
+/*    max-height: 200px;*/
+/*    padding: 18px;*/
+/*    padding-bottom: 12px;*/
+/*    margin: 18px auto;*/
+/*  }*/
+
+/*  .chart-container h2 {*/
+/*    font-size: clamp(1.1rem, 2.8vw, 1.3rem);*/
+/*    margin-bottom: 10px;*/
+/*  }*/
+
+/*  .chart-container + .chart-container {*/
+/*    margin-top: 22px;*/
+/*  }*/
+/*}*/
+
+/*!* 超宽屏幕适配 *!*/
+/*@media (min-width: 2560px) {*/
+/*  .history-statistic {*/
+/*    padding-right: 300px;*/
+/*    padding-top: calc(67px + 100px); !* 增加超宽屏幕顶部间距 *!*/
+/*  }*/
+
+/*  .history-statistic h1 {*/
+/*    font-size: clamp(2.2rem, 5vw, 3.2rem);*/
+/*    margin-bottom: 35px;*/
+/*  }*/
+
+/*  .history-button-container {*/
+/*    right: 100px;*/
+/*    top: calc(67px + 45px);*/
+/*    gap: 15px;*/
+/*  }*/
+
+/*  .chart-container {*/
+/*    max-width: calc(1400px - 300px);*/
+/*    height: 350px; !* 减小超宽屏幕图表高度 *!*/
+/*    max-height: 350px;*/
+/*    padding: 30px;*/
+/*    padding-bottom: 25px;*/
+/*    margin: 35px auto;*/
+/*  }*/
+
+/*  .chart-container h2 {*/
+/*    font-size: clamp(1.8rem, 4vw, 2.2rem);*/
+/*    margin-bottom: 20px;*/
+/*  }*/
+
+/*  .chart-container + .chart-container {*/
+/*    margin-top: 45px;*/
+/*  }*/
+/*}*/
+
+/*.back-to-home-button {*/
+/*  position: fixed;*/
+/*  top: calc(67px + 20px);*/
+/*  left: 20px;*/
+/*  background-color: rgba(0, 0, 0, 0.3);*/
+/*  border: 2px solid rgba(255, 255, 255, 0.8);*/
+/*  color: white;*/
+/*  font-size: 1rem;*/
+/*  font-weight: bold;*/
+/*  padding: 18px 35px;*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  transition: all 0.3s ease;*/
+/*  z-index: 1000;*/
+/*  backdrop-filter: blur(5px);*/
+/*  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);*/
+/*  min-width: 140px;*/
+/*  height: 55px;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*}*/
+
+/*.back-to-home-button:hover {*/
+/*  background-color: rgba(225, 222, 222, 0.92);*/
+/*  color: black;*/
+/*  transform: translateY(-2px);*/
+/*  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);*/
+/*}*/
+
+/*!* 移动设备适配 *!*/
+/*@media (max-width: 768px) {*/
+/*  .back-to-home-button {*/
+/*    top: calc(120px + 15px);*/
+/*    left: 15px;*/
+/*    padding: 15px 25px;*/
+/*    font-size: 0.9rem;*/
+/*    min-width: 110px;*/
+/*    height: 45px;*/
+/*  }*/
+/*}*/
+
+/*!* 平板设备适配 *!*/
+/*@media (min-width: 769px) and (max-width: 1024px) {*/
+/*  .back-to-home-button {*/
+/*    top: calc(67px + 18px);*/
+/*    left: 18px;*/
+/*    padding: 16px 30px;*/
+/*    font-size: 0.95rem;*/
+/*    min-width: 125px;*/
+/*    height: 50px;*/
+/*  }*/
+/*}*/
+
+/*!* 大屏幕适配 *!*/
+/*@media (min-width: 1920px) {*/
+/*  .back-to-home-button {*/
+/*    top: calc(67px + 25px);*/
+/*    left: 25px;*/
+/*  }*/
+/*}*/
+
+/*!* 超小屏幕适配 *!*/
+/*@media (max-width: 480px) {*/
+/*  .back-to-home-button {*/
+/*    top: calc(120px + 10px);*/
+/*    left: 10px;*/
+/*    padding: 12px 20px;*/
+/*    font-size: 0.8rem;*/
+/*    min-width: 95px;*/
+/*    height: 40px;*/
+/*  }*/
+/*}*/
+
+/*!* 超宽屏幕适配 *!*/
+/*@media (min-width: 2560px) {*/
+/*  .back-to-home-button {*/
+/*    top: calc(67px + 30px);*/
+/*    left: 30px;*/
+/*  }*/
+/*}*/
+
+
+
+
+.history-statistic {
+  color: white;
+  text-align: center;
+  margin: 20px;
+  min-height: 100vh;
+  position: relative;
+  padding-right: 200px;
+  padding-top: calc(67px + 80px); /* 增加顶部间距让大标题移出阴影 */
+}
+
+.history-statistic h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  margin-bottom: 25px;
+  color: #ffffff;
+  padding-top: 0;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.history-button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  position: fixed;
+  top: calc(67px + 30px);
+  right: 50px;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.toggle-button {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  padding: 18px 35px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  min-width: 140px;
+  width: 140px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-button:hover {
+  background-color: rgba(225, 222, 222, 0.92);
+  color: black;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.toggle-button.active {
+  background-color: rgb(255, 255, 255);
+  color: black;
+  border-color: rgb(255, 255, 255);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+.chart-container {
+  margin: 25px auto;
+  width: 100%;
+  max-width: calc(1000px - 200px);
+  background-color: rgba(0, 0, 0, 0.85);
+  padding: 25px;
+  padding-bottom: 20px; /* 减少底部padding缩短X轴标题距离 */
+  border-radius: 15px;
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.6);
+  height: 280px; /* 减小高度让图表更扁 */
+  max-height: 280px;
+  overflow: visible;
+  position: relative;
+  margin-right: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* 添加这些属性确保容器尺寸稳定 */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 确保图表canvas正确填充容器 */
+.chart-container canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.chart-container h2 {
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  margin-bottom: 15px;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.chart-container + .chart-container {
+  margin-top: 35px;
+}
+
+.loading {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  color: #ffcc00;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.error {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  color: #ff6b6b;
+  text-align: center;
+  margin-top: 80px;
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .history-statistic {
+    margin: 10px;
+    padding-right: 160px;
+    padding-top: calc(120px + 60px); /* 增加移动设备顶部间距 */
+  }
+
+  .history-statistic h1 {
+    font-size: clamp(1.5rem, 3.5vw, 1.9rem);
+    margin-bottom: 20px;
+  }
+
+  .history-button-container {
+    top: calc(120px + 20px);
+    right: 20px;
+    gap: 8px;
+  }
+
+  .toggle-button {
+    padding: 15px 25px;
+    font-size: 0.9rem;
+    min-width: 110px;
+    width: 110px;
+    height: 45px;
+  }
+
+  .chart-container {
+    max-width: calc(100% - 160px);
+    height: 220px; /* 减小移动设备图表高度 */
+    max-height: 220px;
+    padding: 20px;
+    padding-bottom: 15px;
+    margin: 20px auto;
+  }
+
+  .chart-container h2 {
+    font-size: clamp(1.2rem, 3vw, 1.4rem);
+    margin-bottom: 12px;
+  }
+
+  .chart-container + .chart-container {
+    margin-top: 25px;
+  }
+}
+
+/* 平板设备适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .history-statistic {
+    padding-right: 180px;
+    padding-top: calc(67px + 70px); /* 增加平板顶部间距 */
+  }
+
+  .history-statistic h1 {
+    font-size: clamp(1.7rem, 4vw, 2.2rem);
+    margin-bottom: 22px;
+  }
+
+  .history-button-container {
+    right: 30px;
+    top: calc(67px + 25px);
+  }
+
+  .toggle-button {
+    padding: 16px 30px;
+    font-size: 0.95rem;
+    min-width: 125px;
+    width: 125px;
+    height: 50px;
+  }
+
+  .chart-container {
+    max-width: calc(100% - 180px);
+    height: 250px; /* 减小平板图表高度 */
+    max-height: 250px;
+    padding: 22px;
+    padding-bottom: 18px;
+    margin: 22px auto;
+  }
+
+  .chart-container h2 {
+    font-size: clamp(1.3rem, 3.2vw, 1.6rem);
+    margin-bottom: 13px;
+  }
+
+  .chart-container + .chart-container {
+    margin-top: 30px;
+  }
+}
+
+/* 大屏幕适配 */
+@media (min-width: 1920px) {
+  .history-statistic {
+    padding-right: 250px;
+    padding-top: calc(67px + 90px); /* 增加大屏幕顶部间距 */
+  }
+
+  .history-statistic h1 {
+    font-size: clamp(2rem, 4.5vw, 2.8rem);
+    margin-bottom: 30px;
+  }
+
+  .history-button-container {
+    right: 80px;
+    top: calc(67px + 35px);
+    gap: 12px;
+  }
+
+  .toggle-button {
+    padding: 18px 35px;
+    font-size: 1rem;
+    min-width: 120px;
+  }
+
+  .chart-container {
+    max-width: calc(1200px - 250px);
+    height: 320px; /* 减小大屏幕图表高度 */
+    max-height: 320px;
+    padding: 28px;
+    padding-bottom: 22px;
+    margin: 30px auto;
+  }
+
+  .chart-container h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2rem);
+    margin-bottom: 18px;
+  }
+
+  .chart-container + .chart-container {
+    margin-top: 40px;
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+  .history-statistic {
+    margin: 5px;
+    padding-right: 140px;
+    padding-top: calc(120px + 55px); /* 增加超小屏幕顶部间距 */
+  }
+
+  .history-statistic h1 {
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    margin-bottom: 18px;
+  }
+
+  .history-button-container {
+    right: 10px;
+    top: calc(120px + 15px);
+    gap: 6px;
+  }
+
+  .toggle-button {
+    padding: 12px 20px;
+    font-size: 0.8rem;
+    min-width: 95px;
+    width: 95px;
+    height: 40px;
+  }
+
+  .chart-container {
+    max-width: calc(100% - 140px);
+    height: 200px; /* 减小超小屏幕图表高度 */
+    max-height: 200px;
+    padding: 18px;
+    padding-bottom: 12px;
+    margin: 18px auto;
+  }
+
+  .chart-container h2 {
+    font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+    margin-bottom: 10px;
+  }
+
+  .chart-container + .chart-container {
+    margin-top: 22px;
+  }
+}
+
+/* 超宽屏幕适配 */
+@media (min-width: 2560px) {
+  .history-statistic {
+    padding-right: 300px;
+    padding-top: calc(67px + 100px); /* 增加超宽屏幕顶部间距 */
+  }
+
+  .history-statistic h1 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    margin-bottom: 35px;
+  }
+
+  .history-button-container {
+    right: 100px;
+    top: calc(67px + 45px);
+    gap: 15px;
+  }
+
+  .chart-container {
+    max-width: calc(1400px - 300px);
+    height: 350px; /* 减小超宽屏幕图表高度 */
+    max-height: 350px;
+    padding: 30px;
+    padding-bottom: 25px;
+    margin: 35px auto;
+  }
+
+  .chart-container h2 {
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
+    margin-bottom: 20px;
+  }
+
+  .chart-container + .chart-container {
+    margin-top: 45px;
+  }
+}
+
+.back-to-home-button {
+  position: fixed;
+  top: calc(67px + 20px);
+  left: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 18px 35px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  min-width: 140px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-to-home-button:hover {
+  background-color: rgba(225, 222, 222, 0.92);
+  color: black;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .back-to-home-button {
+    top: calc(120px + 15px);
+    left: 15px;
+    padding: 15px 25px;
+    font-size: 0.9rem;
+    min-width: 110px;
+    height: 45px;
+  }
+}
+
+/* 平板设备适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .back-to-home-button {
+    top: calc(67px + 18px);
+    left: 18px;
+    padding: 16px 30px;
+    font-size: 0.95rem;
+    min-width: 125px;
+    height: 50px;
+  }
+}
+
+/* 大屏幕适配 */
+@media (min-width: 1920px) {
+  .back-to-home-button {
+    top: calc(67px + 25px);
+    left: 25px;
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+  .back-to-home-button {
+    top: calc(120px + 10px);
+    left: 10px;
+    padding: 12px 20px;
+    font-size: 0.8rem;
+    min-width: 95px;
+    height: 40px;
+  }
+}
+
+/* 超宽屏幕适配 */
+@media (min-width: 2560px) {
+  .back-to-home-button {
+    top: calc(67px + 30px);
+    left: 30px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "deploy": {
+    "startCommand": "gunicorn --chdir backend --bind 0.0.0.0:$PORT Flask_app_simplified:app",
+    "healthcheckPath": "/api/health",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}
