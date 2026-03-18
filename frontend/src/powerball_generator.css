@@ -157,6 +157,7 @@
   gap: 15px;
   flex-wrap: nowrap;
   width: 100%;
+  max-width: 100%;
 }
 
 .powerball-number {
@@ -272,6 +273,24 @@
   }
 }
 
+@media (min-width: 769px) and (max-width: 1024px) {
+  .powerball-generator-container {
+    width: min(640px, calc(100vw - 48px));
+    padding: 24px 20px;
+  }
+
+  .powerball-number-display-row {
+    gap: 10px;
+  }
+
+  .powerball-number,
+  .power-ball {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+}
+
 @media (max-width: 480px) {
   .powerball-generator-container {
     padding: 18px 12px;
@@ -290,6 +309,28 @@
     width: 36px;
     height: 36px;
     font-size: 16px;
+  }
+
+  .credits-display {
+    margin-bottom: 16px;
+    padding: 9px 12px;
+  }
+
+  .credits-text {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 390px) {
+  .powerball-number-display-row {
+    gap: 5px;
+  }
+
+  .powerball-number,
+  .power-ball {
+    width: 33px;
+    height: 33px;
+    font-size: 14px;
   }
 }
 

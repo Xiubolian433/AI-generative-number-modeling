@@ -423,9 +423,10 @@
 .history-statistic {
   color: white;
   text-align: center;
-  margin: 20px;
+  margin: 20px auto;
   min-height: 100vh;
   position: relative;
+  width: min(1200px, calc(100% - 40px));
   padding-right: 200px;
   padding-top: calc(67px + 80px); /* 增加顶部间距让大标题移出阴影 */
   box-sizing: border-box;
@@ -490,7 +491,7 @@
 .chart-container {
   margin: 25px auto;
   width: 100%;
-  max-width: calc(1000px - 200px);
+  max-width: min(100%, 980px);
   background-color: rgba(0, 0, 0, 0.85);
   padding: 25px;
   padding-bottom: 20px; /* 减少底部padding缩短X轴标题距离 */
@@ -540,6 +541,30 @@
   color: #ff6b6b;
   text-align: center;
   margin-top: 80px;
+  padding: 0 20px;
+}
+
+@media (max-width: 1180px) {
+  .history-statistic {
+    width: calc(100% - 24px);
+    margin: 12px auto;
+    padding-right: 0;
+    padding-top: 150px;
+  }
+
+  .history-button-container {
+    position: static;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .chart-container {
+    max-width: 100%;
+  }
 }
 
 /* 移动设备适配 */
@@ -598,8 +623,7 @@
 /* 平板设备适配 */
 @media (min-width: 769px) and (max-width: 1024px) {
   .history-statistic {
-    padding-right: 180px;
-    padding-top: calc(67px + 70px); /* 增加平板顶部间距 */
+    padding-top: 140px;
   }
 
   .history-statistic h1 {
@@ -607,21 +631,15 @@
     margin-bottom: 22px;
   }
 
-  .history-button-container {
-    right: 30px;
-    top: calc(67px + 25px);
-  }
-
   .toggle-button {
-    padding: 16px 30px;
+    padding: 14px 24px;
     font-size: 0.95rem;
-    min-width: 125px;
-    width: 125px;
-    height: 50px;
+    min-width: 140px;
+    width: auto;
+    height: auto;
   }
 
   .chart-container {
-    max-width: calc(100% - 180px);
     height: 250px; /* 减小平板图表高度 */
     max-height: 250px;
     padding: 22px;

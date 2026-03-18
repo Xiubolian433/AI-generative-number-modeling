@@ -95,6 +95,16 @@
   }
 }
 
+@media (min-width: 769px) and (max-width: 1180px) {
+  .typewriter-intro {
+    top: calc(67px + 120px);
+    left: 24px;
+    width: clamp(320px, 46vw, 520px);
+    height: clamp(190px, 24vh, 280px);
+    padding: 22px;
+  }
+}
+
 /* 平板设备适配 */
 @media (min-width: 769px) and (max-width: 1024px) {
   .typewriter-intro {
@@ -138,6 +148,14 @@
   .typewriter-content {
     font-size: clamp(0.8rem, 1.3vw, 0.95rem);
     line-height: 1.5;
+  }
+}
+
+@media (max-width: 390px) {
+  .typewriter-intro {
+    margin-top: 118px;
+    min-height: 150px;
+    padding: 16px 14px;
   }
 }
 
@@ -207,6 +225,5 @@
   pointer-events: none;
   border-radius: 0 0 18px 18px;
 }
-
 
 
