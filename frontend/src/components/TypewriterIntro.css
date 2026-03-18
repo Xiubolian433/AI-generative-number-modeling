@@ -1,16 +1,18 @@
 .typewriter-intro {
-  position: fixed;
-  top: calc(67px + 200px); /* 进一步增加间距，完全脱离阴影 */
-  left: 40px; /* 稍微增加左边距，让布局更平衡 */
-  width: clamp(380px, 42vw, 650px); /* 调整宽度，让内容更好展示 */
-  height: clamp(220px, 28vh, 320px); /* 调整高度，让容器更协调 */
+  position: relative;
+  top: auto;
+  left: auto;
+  width: min(760px, calc(100% - 32px));
+  min-height: 220px;
+  max-height: min(34vh, 300px);
+  margin: calc(67px + 28px) auto 24px;
   z-index: 10;
-  background: rgba(0, 0, 0, 0.5); /* 稍微增加背景透明度 */
-  backdrop-filter: blur(12px); /* 增强毛玻璃效果 */
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 18px; /* 稍微增加圆角 */
+  border-radius: 18px;
   padding: 28px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); /* 增强阴影效果 */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -79,13 +81,10 @@
 /* 移动设备适配 */
 @media (max-width: 768px) {
   .typewriter-intro {
-    position: relative;
-    top: auto;
-    left: auto;
     width: min(100%, calc(100vw - 24px));
-    height: auto;
-    min-height: 170px;
-    margin: 132px auto 20px;
+    min-height: 150px;
+    max-height: none;
+    margin: 118px auto 18px;
     padding: 20px 18px;
   }
 
@@ -97,10 +96,10 @@
 
 @media (min-width: 769px) and (max-width: 1180px) {
   .typewriter-intro {
-    top: calc(67px + 120px);
-    left: 24px;
-    width: clamp(320px, 46vw, 520px);
-    height: clamp(190px, 24vh, 280px);
+    width: min(680px, calc(100% - 40px));
+    min-height: 200px;
+    max-height: min(30vh, 270px);
+    margin-top: calc(67px + 24px);
     padding: 22px;
   }
 }
@@ -108,10 +107,10 @@
 /* 平板设备适配 */
 @media (min-width: 769px) and (max-width: 1024px) {
   .typewriter-intro {
-    top: calc(67px + 110px);
-    left: 30px;
-    width: clamp(350px, 48vw, 550px);
-    height: clamp(210px, 25vh, 300px);
+    width: min(640px, calc(100% - 48px));
+    min-height: 190px;
+    max-height: min(28vh, 250px);
+    margin-top: calc(67px + 20px);
     padding: 26px;
   }
 
@@ -124,10 +123,10 @@
 /* 大屏幕适配 */
 @media (min-width: 1920px) {
   .typewriter-intro {
-    top: calc(67px + 150px);
-    left: 50px;
-    width: clamp(500px, 38vw, 700px);
-    height: clamp(250px, 32vh, 380px);
+    width: min(860px, calc(100% - 48px));
+    min-height: 250px;
+    max-height: min(36vh, 360px);
+    margin-top: calc(67px + 34px);
     padding: 32px;
   }
 
@@ -141,31 +140,32 @@
 @media (max-width: 480px) {
   .typewriter-intro {
     width: calc(100vw - 20px);
-    margin-top: 126px;
-    padding: 18px 16px;
+    margin-top: 108px;
+    min-height: 136px;
+    padding: 16px 14px;
   }
 
   .typewriter-content {
-    font-size: clamp(0.8rem, 1.3vw, 0.95rem);
-    line-height: 1.5;
+    font-size: clamp(0.92rem, 3.9vw, 1rem);
+    line-height: 1.48;
   }
 }
 
 @media (max-width: 390px) {
   .typewriter-intro {
-    margin-top: 118px;
-    min-height: 150px;
-    padding: 16px 14px;
+    margin-top: 102px;
+    min-height: 128px;
+    padding: 15px 13px;
   }
 }
 
 /* 超宽屏幕适配 */
 @media (min-width: 2560px) {
   .typewriter-intro {
-    top: calc(67px + 170px);
-    left: 60px;
-    width: clamp(550px, 35vw, 750px);
-    height: clamp(280px, 35vh, 420px);
+    width: min(920px, calc(100% - 60px));
+    min-height: 280px;
+    max-height: min(38vh, 400px);
+    margin-top: calc(67px + 40px);
     padding: 38px;
   }
 
@@ -207,12 +207,6 @@
   }
 }
 
-/* 确保内容区域在边框动画之上 */
-.typewriter-intro {
-  position: relative;
-  background: rgba(0, 0, 0, 0.65);
-}
-
 /* 底部渐变遮罩 */
 .typewriter-intro::after {
   content: "";
@@ -225,5 +219,4 @@
   pointer-events: none;
   border-radius: 0 0 18px 18px;
 }
-
 

@@ -337,7 +337,7 @@ with home button
   min-height: 100vh;
   box-sizing: border-box;
   /* 添加顶部间距让标题脱离导航栏阴影 */
-  padding-top: calc(67px + 80px);
+  padding-top: calc(67px + 52px);
 }
 
 .history-numbers h1 {
@@ -489,19 +489,19 @@ with home button
 
 @media (max-width: 1180px) {
   .history-numbers {
-    padding-top: 150px;
+    padding-top: 132px;
   }
 }
 
 /* 移动设备适配 */
 @media (max-width: 768px) {
   .history-numbers {
-    padding: 170px 10px 20px;
+    padding: 136px 12px 20px;
   }
 
   .history-numbers h1 {
-    font-size: clamp(1.5rem, 3.5vw, 1.9rem);
-    margin-bottom: 18px;
+    font-size: clamp(1.35rem, 3.5vw, 1.75rem);
+    margin-bottom: 14px;
   }
 
   .button-group {
@@ -535,8 +535,10 @@ with home button
 
   .back-to-home-button {
     position: static;
-    margin: 0 auto 16px;
+    margin: 0 0 12px;
     display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
   }
 }
 
@@ -554,13 +556,14 @@ with home button
 
 @media (max-width: 540px) {
   .button-group {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
   }
 
   .lottery-button {
-    width: min(100%, 220px);
-    max-width: 220px;
+    width: calc(50% - 6px);
+    max-width: none;
   }
 
   .history-table {
@@ -605,12 +608,12 @@ with home button
 /* 超小屏幕适配 */
 @media (max-width: 480px) {
   .history-numbers {
-    padding: 165px 8px 20px;
+    padding: 126px 10px 20px;
   }
 
   .history-numbers h1 {
-    font-size: clamp(1.3rem, 3vw, 1.7rem);
-    margin-bottom: 16px;
+    font-size: clamp(1.2rem, 5vw, 1.55rem);
+    margin-bottom: 12px;
   }
 
   .button-group {
@@ -619,7 +622,7 @@ with home button
 
   .lottery-button {
     max-width: none;
-    width: 100%;
+    width: calc(50% - 6px);
   }
 
   .history-table {
@@ -627,7 +630,8 @@ with home button
   }
 
   .button-group {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
   }
 }
 
@@ -672,8 +676,8 @@ with home button
   .back-to-home-button {
     top: auto;
     left: auto;
-    font-size: 0.8rem;
-    padding: 6px 12px;
+    font-size: 0.82rem;
+    padding: 9px 14px;
   }
 }
 

@@ -1346,12 +1346,12 @@ body {
 .button-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  min-height: 100vh;
+  min-height: auto;
   gap: clamp(15px, 3vw, 20px);
   z-index: 1;
-  padding: 340px 16px 40px;
+  padding: 0 16px 48px;
   box-sizing: border-box;
 }
 
@@ -1397,7 +1397,7 @@ body {
 
 @media (max-width: 1180px) {
   .button-container {
-    padding-top: clamp(220px, 28vh, 300px);
+    padding-top: 0;
   }
 
   .generator-wrapper {
@@ -1479,7 +1479,8 @@ body {
   }
 
   .button-container {
-    padding-top: 280px;
+    padding-top: 0;
+    padding-bottom: 36px;
   }
 
   .generator-wrapper {
@@ -1542,7 +1543,7 @@ body {
   }
 
   .button-container {
-    padding-top: 260px;
+    padding-top: 0;
   }
 
   .generator-wrapper {
@@ -1571,7 +1572,7 @@ body {
   }
 
   .button-container {
-    margin-top: clamp(100px, 15vh, 140px);
+    padding-bottom: 64px;
   }
 
   .dev-tools {
@@ -1662,7 +1663,7 @@ body {
   }
 
   .button-container {
-    padding-top: 250px;
+    padding-top: 0;
   }
 
   .generator-wrapper {
@@ -1705,7 +1706,7 @@ body {
 
 @media (max-width: 380px) {
   .button-container {
-    padding-top: 228px;
+    padding-top: 0;
   }
 
   .generator-wrapper {
