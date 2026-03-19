@@ -165,12 +165,12 @@ function PaymentModal({ onClose, onSuccess }) {
   const [showCodeInput, setShowCodeInput] = useState(false)
   const [processing, setProcessing] = useState(false)
 
-  const paymentOptions = [
-    { price: 1, credits: 5, popular: false },
-    { price: 5, credits: 30, popular: true },
-    { price: 10, credits: 70, popular: false },
-    { price: 20, credits: 150, popular: false },
-  ]
+const paymentOptions = [
+  { price: 1, credits: 3, popular: false },
+  { price: 5, credits: 25, popular: true },
+  { price: 10, credits: 60, popular: false },
+  { price: 20, credits: 150, popular: false },
+]
 
   const handlePackageSelect = async (option) => {
     setProcessing(true)

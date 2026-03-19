@@ -167,9 +167,9 @@ def generate_access_code():
 
 # 套餐配置
 PAYMENT_PACKAGES = {
-    1: {"credits": 5, "price": 1.00},
-    5: {"credits": 30, "price": 5.00},
-    10: {"credits": 70, "price": 10.00},
+    1: {"credits": 3, "price": 1.00},
+    5: {"credits": 25, "price": 5.00},
+    10: {"credits": 60, "price": 10.00},
     20: {"credits": 150, "price": 20.00}
 }
 

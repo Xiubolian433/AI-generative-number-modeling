@@ -3,6 +3,12 @@ A generative AI-based lottery number generator powered by GAN models and integra
 
 ⚠️ Disclaimer: This project is for entertainment purposes only. Generated numbers are not guaranteed to increase your chances of winning. Please play responsibly.
 
+Current production deployment:
+
+- Frontend: custom domain on Render Static Site
+- Backend: Render Python Web Service
+- Database: SQLite on a Render Persistent Disk
+
 # Project Overview
 LotteryGenAI is a web-based application that uses trained generative models to analyze historical lottery results and generate statistically plausible combinations for:
 
@@ -15,6 +21,8 @@ The platform currently includes:
 - 💰 PayPal sandbox/live payment support with credit packages
 - 🔑 Access-code based credit recovery across devices
 - 📊 Automatically refreshed History Numbers and History Statistic pages
+- ⚡ Cached official history data for faster production performance
+- 📱 Responsive layouts tuned for desktop, iPad, iPhone, and foldable-width devices
 - 🌐 React frontend and Flask backend
 - 💾 Local SQLite persistence for payments and credits
 
@@ -67,6 +75,7 @@ Generate Mega Millions and Powerball combinations using trained models.
 - Mega Millions history is fetched from the official Mega Millions site
 - Powerball history is fetched from the official Powerball site
 - Statistics are computed locally from the latest fetched draw history
+- Production now caches fetched history data to reduce latency and improve reliability on hosted environments
 
 ### 💳 PayPal Credit Purchase Flow
 Users can purchase credits through PayPal and use them immediately after successful payment.
@@ -90,6 +99,21 @@ The app stores:
 - Used credits
 
 using a local SQLite database (`backend/payments.db`).
+
+### 📱 Responsive UI
+The current frontend has been tuned for:
+
+- Desktop and large laptop layouts
+- iPad and tablet widths
+- iPhone portrait layouts
+- Narrow Android / foldable device widths
+
+Special attention has been given to:
+
+- homepage hero layout
+- generator pages
+- History Numbers and History Statistic pages
+- payment success and top-up flows
 
 # Current Architecture
 The currently active backend entrypoint is:
@@ -271,14 +295,14 @@ Recommended backend settings:
 - Runtime: `Python`
 - Python version: `3.11` (the repository includes `runtime.txt` and `.python-version` for Render compatibility with PyTorch)
 - Plan: `Starter` or higher
-- Start command: `gunicorn --chdir backend --bind 0.0.0.0:$PORT Flask_app_simplified:app`
+- Start command: `gunicorn --chdir backend --bind 0.0.0.0:$PORT --worker-class gthread --threads 4 --workers 1 --timeout 300 Flask_app_simplified:app`
 - Health check path: `/api/health`
 
 Recommended backend environment values:
 
 ```env
 FRONTEND_URL=https://lotteryganai.com
-BACKEND_URL=https://api.lotteryganai.com
+BACKEND_URL=https://your-render-backend.onrender.com
 PAYMENTS_DB_PATH=/var/data/payments.db
 
 PAYPAL_MODE=sandbox
@@ -301,12 +325,13 @@ Recommended frontend settings:
 Frontend environment variable:
 
 ```env
-REACT_APP_API_BASE_URL=https://api.lotteryganai.com
+REACT_APP_API_BASE_URL=https://your-render-backend.onrender.com
 ```
 
 Note:
 
 - [render.yaml](/Users/shuhaozhang/Documents/AI-generative-number-modeling/render.yaml) includes a catch-all rewrite so React Router routes such as `/history-numbers` and `/payment/success` load correctly.
+- A simple production setup is to use a custom domain only for the frontend and keep the backend on its Render-generated domain.
 - If you use Render-generated domains first, update `FRONTEND_URL`, `BACKEND_URL`, and `REACT_APP_API_BASE_URL` after custom domains are connected.
 
 # 🌍 Environment Differentiation and Configuration Management
@@ -322,10 +347,34 @@ PAYPAL_MODE=sandbox
 ## Production example
 ```env
 FRONTEND_URL=https://lotteryganai.com
-BACKEND_URL=https://api.lotteryganai.com
+BACKEND_URL=https://your-render-backend.onrender.com
 PAYMENTS_DB_PATH=/var/data/payments.db
 PAYPAL_MODE=sandbox
 ```
+
+# 💸 Estimated Monthly Cost
+Based on the current production setup used for this project:
+
+- Render Static Site: `$0/month`
+- Render Starter Web Service: `$7/month`
+- Render Persistent Disk (1 GB): `$0.25/month`
+- Namecheap `.com` renewal: about `$18.48/year`
+- ICANN fee: `$0.20/year`
+
+Approximate monthly operating cost:
+
+- Render only: about `$7.25/month`
+- Domain averaged monthly: about `$1.56/month`
+- Total average monthly cost: about `$8.81/month`
+
+This estimate assumes:
+
+- one `Starter` backend service
+- one `1 GB` persistent disk
+- one frontend static site
+- one `.com` domain renewed yearly at current public pricing
+
+If traffic stays within Render Hobby plan bandwidth allowances and you do not add extra services, this is a reasonable baseline for day-to-day maintenance.
 
 # Health Check
 Once the backend is running, verify it with:
@@ -345,6 +394,12 @@ Expected indicators include:
 - Do not commit real PayPal credentials or other secrets
 - Keep `backend/.env` local only
 - Commit only placeholder values in `backend/.env.example`
+
+# Production Notes
+- The frontend can run on a custom root domain such as `lotteryganai.com`
+- The backend can remain on a Render-generated domain if you do not need a separate public API domain
+- SQLite production data is stored on the Render persistent disk at `/var/data/payments.db`
+- Official lottery history pages are cached on the backend to improve first-load performance and reduce external request failures
 
 # License / Usage Notice
 This repository is intended for educational and entertainment purposes. Users are responsible for complying with all applicable laws, platform rules, and payment provider terms.
