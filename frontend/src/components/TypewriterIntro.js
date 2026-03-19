@@ -9,10 +9,10 @@ const TypewriterIntro = () => {
   const [showCursor, setShowCursor] = useState(true)
 
   const fullText = `Welcome to the Future of Lottery AI Generator.
-  
-Our advanced GAN AI technology analyzes thousands of historical lottery numbers to identify hidden patterns and correlations. 
 
-Using Generative Adversarial Networks, we generate numbers that closely resemble winning combinations from the past, giving you the edge in your lottery strategy.`
+Our AI lottery number generator uses GAN models and historical draw analysis to create smart picks for Mega Millions and Powerball.
+
+Explore lottery history numbers, view lottery frequency statistics, and generate AI-assisted number combinations in one place.`
 
   useEffect(() => {
     if (currentIndex < fullText.length) {
