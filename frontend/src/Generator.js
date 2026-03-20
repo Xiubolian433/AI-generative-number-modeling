@@ -4,10 +4,9 @@ import { useState, useEffect } from "react"
 import "./Generator.css"
 import { API } from "./api"
 import {
-  consumeStoredCredit,
   getStoredAccessCode,
-  getStoredCredits,
   setServerSyncedCredits,
+  setStoredAccessCode,
 } from "./credits"
 
 function Generator({ onCreditsUpdate }) {
@@ -23,9 +22,20 @@ function Generator({ onCreditsUpdate }) {
     try {
       const storedAccessCode = getStoredAccessCode()
       if (!storedAccessCode) {
-        const { totalCredits } = getStoredCredits()
-        setRemainingCredits(totalCredits)
-        return totalCredits
+        const bootstrapResponse = await API.post("/api/credits/bootstrap", {})
+        if (bootstrapResponse.data.valid) {
+          if (bootstrapResponse.data.access_code) {
+            setStoredAccessCode(bootstrapResponse.data.access_code)
+          }
+          const totalCredits = bootstrapResponse.data.remaining_credits || 0
+          setRemainingCredits(totalCredits)
+          setServerSyncedCredits(totalCredits)
+          return totalCredits
+        }
+
+        setRemainingCredits(0)
+        setServerSyncedCredits(0)
+        return 0
       }
 
       const response = await API.post("/api/credits/verify", {
@@ -38,15 +48,15 @@ function Generator({ onCreditsUpdate }) {
         setServerSyncedCredits(totalCredits)
         return totalCredits
       } else {
-        const { totalCredits } = getStoredCredits()
-        setRemainingCredits(totalCredits)
-        return totalCredits
+        setStoredAccessCode("")
+        setRemainingCredits(0)
+        setServerSyncedCredits(0)
+        return 0
       }
     } catch (error) {
       console.error("获取积分失败:", error)
-      const { totalCredits } = getStoredCredits()
-      setRemainingCredits(totalCredits)
-      return totalCredits
+      setRemainingCredits(0)
+      return 0
     }
   }
 
@@ -54,10 +64,7 @@ function Generator({ onCreditsUpdate }) {
     try {
       const storedAccessCode = getStoredAccessCode()
       if (!storedAccessCode) {
-        setRemainingCredits(consumeStoredCredit())
-
-        if (onCreditsUpdate) onCreditsUpdate()
-        return true
+        throw new Error("Access code required")
       }
 
       const response = await API.post("/api/credits/consume", {

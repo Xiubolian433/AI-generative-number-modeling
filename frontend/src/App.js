@@ -34,14 +34,74 @@ function App() {
   }
 
   useEffect(() => {
-    const currentCount = localStorage.getItem("visitCount") || 0
-    const newCount = Number.parseInt(currentCount) + 1
-
-    localStorage.setItem("visitCount", newCount)
-    setVisitCount(newCount)
-
     initializeCreditsIfNeeded()
-    updateTotalCredits()
+
+    const syncVisitCount = async () => {
+      const sessionKey = "visitTracked"
+      const hasTrackedVisit = sessionStorage.getItem(sessionKey) === "true"
+      const endpoint = hasTrackedVisit ? "/api/visits" : "/api/visits/track"
+      const method = hasTrackedVisit ? "GET" : "POST"
+
+      try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+
+        const data = await response.json()
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to sync visit count")
+        }
+
+        setVisitCount(Number(data.total_visits) || 0)
+
+        if (!hasTrackedVisit) {
+          sessionStorage.setItem(sessionKey, "true")
+        }
+      } catch (error) {
+        console.error("Failed to sync visit count:", error)
+      }
+    }
+
+    const bootstrapCredits = async () => {
+      const storedAccessCode = getStoredAccessCode()
+
+      try {
+        const endpoint = storedAccessCode ? "/api/credits/verify" : "/api/credits/bootstrap"
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(
+            storedAccessCode
+              ? { access_code: storedAccessCode }
+              : {}
+          ),
+        })
+
+        const data = await response.json()
+
+        if (response.ok && data.valid) {
+          if (data.access_code) {
+            setStoredAccessCode(data.access_code)
+          }
+          setServerSyncedCredits(data.remaining_credits || 0)
+          updateTotalCredits()
+          return
+        }
+
+        if (!storedAccessCode) {
+          setServerSyncedCredits(0)
+          updateTotalCredits()
+        }
+      } catch (error) {
+        console.error("Failed to bootstrap credits:", error)
+        updateTotalCredits()
+      }
+    }
 
     const syncCreditsFromBackend = async () => {
       const accessCode = getStoredAccessCode()
@@ -70,6 +130,8 @@ function App() {
       }
     }
 
+    syncVisitCount()
+    bootstrapCredits()
     syncCreditsFromBackend()
 
     return subscribeToCreditsUpdated(() => updateTotalCredits())
@@ -183,6 +245,7 @@ const paymentOptions = [
         },
         body: JSON.stringify({
           package_price: option.price,
+          access_code: getStoredAccessCode(),
         }),
       })
 
@@ -217,7 +280,7 @@ const paymentOptions = [
 
         if (data.valid) {
           setServerSyncedCredits(data.remaining_credits)
-          setStoredAccessCode(accessCode)
+          setStoredAccessCode(accessCode.trim().toUpperCase())
 
           alert(`✅ Successfully restored ${data.remaining_credits} generation credits!`)
           onSuccess()

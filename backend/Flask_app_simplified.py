@@ -109,6 +109,30 @@ def init_payment_db():
             )
         ''')
 
+        # 创建免费试用领取记录表
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS free_credit_claims (
+                claim_key TEXT PRIMARY KEY,
+                access_code TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+
+        # 创建站点指标表
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS site_metrics (
+                metric_key TEXT PRIMARY KEY,
+                metric_value INTEGER NOT NULL DEFAULT 0,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+
+        # 初始化总访问量记录
+        cursor.execute('''
+            INSERT OR IGNORE INTO site_metrics (metric_key, metric_value)
+            VALUES ('total_visits', 0)
+        ''')
+
         conn.commit()
         conn.close()
 
@@ -150,11 +174,14 @@ def generate_access_code():
         while True:
             code = "LC-" + ''.join(secrets.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(6))
 
-            # 检查是否已存在
+            # 检查支付记录和积分记录里是否已存在
             conn = sqlite3.connect(PAYMENTS_DB_PATH)
             cursor = conn.cursor()
             cursor.execute('SELECT id FROM payments WHERE access_code = ?', (code,))
-            if not cursor.fetchone():
+            payment_exists = cursor.fetchone()
+            cursor.execute('SELECT id FROM user_credits WHERE access_code = ?', (code,))
+            credit_exists = cursor.fetchone()
+            if not payment_exists and not credit_exists:
                 conn.close()
                 return code
             conn.close()
@@ -163,6 +190,28 @@ def generate_access_code():
         # 如果数据库出错，返回一个基于时间的唯一码
         import time
         return f"LC-{int(time.time())}"
+
+
+def get_client_ip():
+    """获取客户端 IP，优先使用反向代理头。"""
+    forwarded_for = request.headers.get('X-Forwarded-For', '')
+    if forwarded_for:
+        return forwarded_for.split(',')[0].strip()
+    return request.remote_addr or 'unknown'
+
+
+def get_credit_record(access_code):
+    """读取 access code 对应的积分记录。"""
+    conn = sqlite3.connect(PAYMENTS_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT total_credits, used_credits, remaining_credits
+        FROM user_credits
+        WHERE access_code = ?
+    ''', (access_code,))
+    result = cursor.fetchone()
+    conn.close()
+    return result
 
 
 # 套餐配置
@@ -378,6 +427,7 @@ def create_payment_order():
 
         data = request.get_json()
         package_price = data.get('package_price')
+        existing_access_code = (data.get('access_code') or '').strip().upper()
         logger.info(f"Requested package price: {package_price}")
 
         if package_price not in PAYMENT_PACKAGES:
@@ -386,8 +436,13 @@ def create_payment_order():
 
         package = PAYMENT_PACKAGES[package_price]
 
-        # 生成访问码
-        access_code = generate_access_code()
+        # 充值时优先复用当前 access code，保证免费额度和付费额度合并到同一个账户
+        access_code = existing_access_code
+        if access_code:
+            if not get_credit_record(access_code):
+                return jsonify({'error': 'Invalid access code'}), 400
+        else:
+            access_code = generate_access_code()
 
         # 创建PayPal支付
         payment = paypalrestsdk.Payment({
@@ -669,6 +724,73 @@ def verify_access_code():
         return jsonify({'error': 'Internal server error'}), 500
 
 
+@app.route('/api/credits/bootstrap', methods=['POST'])
+def bootstrap_credits():
+    """初始化匿名用户积分，免费试用额度由后端统一发放。"""
+    try:
+        data = request.get_json(silent=True) or {}
+        access_code = (data.get('access_code') or '').strip().upper()
+
+        if access_code:
+            result = get_credit_record(access_code)
+            if result:
+                total_credits, used_credits, remaining_credits = result
+                return jsonify({
+                    'success': True,
+                    'valid': True,
+                    'access_code': access_code,
+                    'total_credits': total_credits,
+                    'used_credits': used_credits,
+                    'remaining_credits': remaining_credits,
+                    'trial_granted': False,
+                })
+
+        claim_key = get_client_ip()
+        conn = sqlite3.connect(PAYMENTS_DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('SELECT access_code FROM free_credit_claims WHERE claim_key = ?', (claim_key,))
+        existing_claim = cursor.fetchone()
+
+        if existing_claim:
+            conn.close()
+            return jsonify({
+                'success': True,
+                'valid': False,
+                'access_code': '',
+                'total_credits': 0,
+                'used_credits': 0,
+                'remaining_credits': 0,
+                'trial_granted': False,
+            })
+
+        access_code = generate_access_code()
+        starter_credits = 5
+        cursor.execute('''
+            INSERT INTO user_credits (access_code, total_credits, remaining_credits)
+            VALUES (?, ?, ?)
+        ''', (access_code, starter_credits, starter_credits))
+        cursor.execute('''
+            INSERT INTO free_credit_claims (claim_key, access_code)
+            VALUES (?, ?)
+        ''', (claim_key, access_code))
+        conn.commit()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'valid': True,
+            'access_code': access_code,
+            'total_credits': starter_credits,
+            'used_credits': 0,
+            'remaining_credits': starter_credits,
+            'trial_granted': True,
+        })
+
+    except Exception as e:
+        logger.error(f"Error bootstrapping credits: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+
 @app.route('/api/credits/consume', methods=['POST'])
 def consume_credit():
     """消费一个积分"""
@@ -720,6 +842,59 @@ def consume_credit():
 
     except Exception as e:
         logger.error(f"Error consuming credit: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+
+@app.route('/api/visits', methods=['GET'])
+def get_total_visits():
+    """获取网站总访问次数"""
+    try:
+        conn = sqlite3.connect(PAYMENTS_DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT metric_value
+            FROM site_metrics
+            WHERE metric_key = 'total_visits'
+        ''')
+        result = cursor.fetchone()
+        conn.close()
+
+        total_visits = result[0] if result else 0
+        return jsonify({'success': True, 'total_visits': total_visits})
+
+    except Exception as e:
+        logger.error(f"Error fetching total visits: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+
+@app.route('/api/visits/track', methods=['POST'])
+def track_total_visits():
+    """记录一次网站访问并返回最新总访问次数"""
+    try:
+        conn = sqlite3.connect(PAYMENTS_DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('BEGIN IMMEDIATE')
+        cursor.execute('''
+            INSERT INTO site_metrics (metric_key, metric_value, updated_at)
+            VALUES ('total_visits', 1, CURRENT_TIMESTAMP)
+            ON CONFLICT(metric_key) DO UPDATE SET
+                metric_value = metric_value + 1,
+                updated_at = CURRENT_TIMESTAMP
+        ''')
+        cursor.execute('''
+            SELECT metric_value
+            FROM site_metrics
+            WHERE metric_key = 'total_visits'
+        ''')
+        result = cursor.fetchone()
+        conn.commit()
+        conn.close()
+
+        total_visits = result[0] if result else 0
+        return jsonify({'success': True, 'total_visits': total_visits})
+
+    except Exception as e:
+        logger.error(f"Error tracking total visits: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
 
 

@@ -1,5 +1,4 @@
-const FREE_CREDITS_KEY = "freeCredits"
-const PAID_CREDITS_KEY = "paidCredits"
+const TOTAL_CREDITS_KEY = "totalCredits"
 const ACCESS_CODE_KEY = "accessCode"
 const CREDITS_EVENT = "creditsUpdated"
 
@@ -10,24 +9,16 @@ const readInt = (key, fallback = 0) => {
 }
 
 export const getStoredCredits = () => {
-  const freeCredits = readInt(FREE_CREDITS_KEY, 0)
-  const paidCredits = readInt(PAID_CREDITS_KEY, 0)
+  const totalCredits = readInt(TOTAL_CREDITS_KEY, 0)
 
   return {
-    freeCredits,
-    paidCredits,
-    totalCredits: freeCredits + paidCredits,
+    freeCredits: 0,
+    paidCredits: totalCredits,
+    totalCredits,
   }
 }
 
-export const initializeCreditsIfNeeded = () => {
-  const hasInitialized = localStorage.getItem("creditsInitialized")
-  if (!hasInitialized) {
-    localStorage.setItem(FREE_CREDITS_KEY, "5")
-    localStorage.setItem(PAID_CREDITS_KEY, "0")
-    localStorage.setItem("creditsInitialized", "true")
-  }
-}
+export const initializeCreditsIfNeeded = () => {}
 
 export const emitCreditsUpdated = () => {
   window.dispatchEvent(new Event(CREDITS_EVENT))
@@ -43,39 +34,21 @@ export const subscribeToCreditsUpdated = (listener) => {
   }
 }
 
-export const setStoredCredits = ({ freeCredits, paidCredits }) => {
-  localStorage.setItem(FREE_CREDITS_KEY, String(Math.max(0, freeCredits)))
-  localStorage.setItem(PAID_CREDITS_KEY, String(Math.max(0, paidCredits)))
+export const setStoredCredits = ({ totalCredits }) => {
+  localStorage.setItem(TOTAL_CREDITS_KEY, String(Math.max(0, totalCredits)))
   emitCreditsUpdated()
 }
 
-export const setPaidCreditsOnly = (paidCredits) => {
-  const { freeCredits } = getStoredCredits()
-  setStoredCredits({ freeCredits, paidCredits })
-}
-
 export const setServerSyncedCredits = (remainingCredits) => {
-  setStoredCredits({ freeCredits: 0, paidCredits: remainingCredits })
-}
-
-export const consumeStoredCredit = () => {
-  const { freeCredits, paidCredits } = getStoredCredits()
-
-  if (freeCredits > 0) {
-    setStoredCredits({ freeCredits: freeCredits - 1, paidCredits })
-    return freeCredits - 1 + paidCredits
-  }
-
-  if (paidCredits > 0) {
-    setStoredCredits({ freeCredits, paidCredits: paidCredits - 1 })
-    return freeCredits + paidCredits - 1
-  }
-
-  throw new Error("Insufficient credits")
+  setStoredCredits({ totalCredits: remainingCredits })
 }
 
 export const getStoredAccessCode = () => localStorage.getItem(ACCESS_CODE_KEY) || ""
 
 export const setStoredAccessCode = (accessCode) => {
-  localStorage.setItem(ACCESS_CODE_KEY, accessCode)
+  if (accessCode) {
+    localStorage.setItem(ACCESS_CODE_KEY, accessCode)
+  } else {
+    localStorage.removeItem(ACCESS_CODE_KEY)
+  }
 }
