@@ -9,6 +9,8 @@ import { API } from "../api.js"
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, Title)
 
+const HISTORY_STATISTICS_CACHE_KEY = "historyStatisticsCache"
+
 const HistoryStatistic = () => {
   const navigate = useNavigate()
   const [statisticsType, setStatisticsType] = useState("MegaMillion")
@@ -16,28 +18,73 @@ const HistoryStatistic = () => {
   const [specialBallOccurrences, setSpecialBallOccurrences] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
 
   const handleBackToHome = () => {
     navigate("/")
   }
 
-  const fetchStatisticsData = async (type) => {
+  const readCache = () => {
+    try {
+      return JSON.parse(window.sessionStorage.getItem(HISTORY_STATISTICS_CACHE_KEY) || "{}")
+    } catch (cacheError) {
+      console.warn("Failed to read history statistics cache:", cacheError)
+      return {}
+    }
+  }
+
+  const writeCache = (type, nextData) => {
+    try {
+      const currentCache = readCache()
+      window.sessionStorage.setItem(
+        HISTORY_STATISTICS_CACHE_KEY,
+        JSON.stringify({
+          ...currentCache,
+          [type]: nextData,
+        }),
+      )
+    } catch (cacheError) {
+      console.warn("Failed to write history statistics cache:", cacheError)
+    }
+  }
+
+  const applyStatisticsData = (type, data) => {
+    setWhiteBallOccurrences(data.whiteballoccurrences || {})
+
+    if (type === "MegaMillion") {
+      setSpecialBallOccurrences(data.megaBalloccurrences || {})
+    } else {
+      setSpecialBallOccurrences(data.powerballoccurrences || {})
+    }
+  }
+
+  const fetchStatisticsData = async (type, options = {}) => {
+    const { background = false, ignoreRef } = options
     let lastError = null
 
+    const cachedData = readCache()[type]
+    const hasCachedData = cachedData && typeof cachedData === "object" && Object.keys(cachedData).length > 0
+
     try {
-      setLoading(true)
-      setError(null)
+      if (!background) {
+        setLoading(true)
+        setError(null)
+        if (hasCachedData) {
+          applyStatisticsData(type, cachedData)
+          setIsInitialLoad(false)
+        }
+      }
+
       for (let attempt = 1; attempt <= 2; attempt += 1) {
         try {
           const response = await API.get(`/api/history-statistic/${type}`)
           const data = response.data
 
-          setWhiteBallOccurrences(data.whiteballoccurrences || {})
+          writeCache(type, data)
 
-          if (type === "MegaMillion") {
-            setSpecialBallOccurrences(data.megaBalloccurrences || {})
-          } else if (type === "PowerBall") {
-            setSpecialBallOccurrences(data.powerballoccurrences || {})
+          if (!background && !ignoreRef?.current) {
+            applyStatisticsData(type, data)
+            setIsInitialLoad(false)
           }
 
           return
@@ -52,22 +99,49 @@ const HistoryStatistic = () => {
       throw lastError || new Error("History statistics request failed")
     } catch (err) {
       console.error("Error fetching statistics data:", err)
-      setError("Failed to fetch data. Please try again later.")
+      if (!background && !ignoreRef?.current) {
+        setError(hasCachedData ? null : "Failed to fetch data. Please try again later.")
+      }
     } finally {
-      setLoading(false)
+      if (!background && !ignoreRef?.current) {
+        setLoading(false)
+      }
     }
   }
 
   useEffect(() => {
-    fetchStatisticsData(statisticsType)
+    const ignoreRef = { current: false }
+
+    fetchStatisticsData(statisticsType, { ignoreRef })
+
+    const otherType = statisticsType === "MegaMillion" ? "PowerBall" : "MegaMillion"
+    const cachedOtherData = readCache()[otherType]
+    if (!cachedOtherData || Object.keys(cachedOtherData).length === 0) {
+      fetchStatisticsData(otherType, { background: true, ignoreRef })
+    }
+
+    return () => {
+      ignoreRef.current = true
+    }
   }, [statisticsType])
 
   const handleButtonClick = (type) => {
     setStatisticsType(type)
   }
 
-  if (loading) {
-    return <div className="loading">Loading...</div>
+  const isPowerBall = statisticsType === "PowerBall"
+  const isDataReady = Object.keys(whiteBallOccurrences).length > 0 || Object.keys(specialBallOccurrences).length > 0
+
+  if (loading && isInitialLoad && !isDataReady) {
+    return (
+      <div className="history-statistic history-statistic-loading-view">
+        <div className="history-loading-card">
+          <div className="history-loading-spinner" />
+          <h2>{isPowerBall ? "Loading Power Ball statistics..." : "Loading Mega Million statistics..."}</h2>
+          <p>{isPowerBall ? "Power Ball frequency stats may take longer to prepare. Please wait..." : "Preparing the latest frequency charts..."}</p>
+        </div>
+      </div>
+    )
   }
 
   if (error) {
@@ -235,6 +309,17 @@ const HistoryStatistic = () => {
           Power Ball
         </button>
       </div>
+      {loading && (
+        <div className="history-loading-inline" aria-live="polite">
+          <div className="history-loading-spinner compact" />
+          <span>
+            {isPowerBall
+              ? "Loading Power Ball statistics. This request is usually slower."
+              : "Refreshing statistics..."}
+          </span>
+        </div>
+      )}
+      <div className={`chart-shell ${loading ? "is-loading" : ""}`}>
       <div className="chart-container">
         <h2>White Ball Frequencies</h2>
         <Bar data={whiteBallData} options={chartOptions("Ball Number", "Frequency")} />
@@ -242,6 +327,7 @@ const HistoryStatistic = () => {
       <div className="chart-container">
         <h2>{statisticsType === "MegaMillion" ? "Mega Ball Frequencies" : "Power Ball Frequencies"}</h2>
         <Bar data={specialBallData} options={chartOptions("Ball Number", "Frequency")} />
+      </div>
       </div>
     </div>
   )

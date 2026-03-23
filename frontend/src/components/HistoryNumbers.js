@@ -5,12 +5,15 @@ import "./HistoryNumbers.css"
 import { useNavigate } from "react-router-dom"
 import { API } from "../api.js"
 
+const HISTORY_NUMBERS_CACHE_KEY = "historyNumbersCache"
+
 const HistoryNumbers = () => {
   const [data, setData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [lotteryType, setLotteryType] = useState("MegaMillion")
   const [error, setError] = useState(null)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
 
   const itemsPerPage = 20
   const maxPageButtons = 10
@@ -58,21 +61,65 @@ const HistoryNumbers = () => {
 
   const navigate = useNavigate()
 
+  const readCache = () => {
+    try {
+      return JSON.parse(window.sessionStorage.getItem(HISTORY_NUMBERS_CACHE_KEY) || "{}")
+    } catch (cacheError) {
+      console.warn("Failed to read history numbers cache:", cacheError)
+      return {}
+    }
+  }
+
+  const writeCache = (type, nextData) => {
+    try {
+      const currentCache = readCache()
+      window.sessionStorage.setItem(
+        HISTORY_NUMBERS_CACHE_KEY,
+        JSON.stringify({
+          ...currentCache,
+          [type]: nextData,
+        }),
+      )
+    } catch (cacheError) {
+      console.warn("Failed to write history numbers cache:", cacheError)
+    }
+  }
+
   const handleBackToHome = () => {
     navigate("/")
   }
 
   useEffect(() => {
-    const fetchData = async () => {
+    let ignore = false
+
+    const fetchData = async (type, options = {}) => {
+      const { background = false } = options
       let lastError = null
 
-      setLoading(true)
-      setError(null)
+      const cachedData = readCache()[type]
+      const hasCachedData = Array.isArray(cachedData) && cachedData.length > 0
+
+      if (!background) {
+        setLoading(true)
+        setError(null)
+        if (hasCachedData) {
+          setData(cachedData)
+          setIsInitialLoad(false)
+        }
+      }
+
       try {
         for (let attempt = 1; attempt <= 2; attempt += 1) {
           try {
-            const response = await API.get(`/api/history-numbers/${lotteryType}`)
-            setData(response.data)
+            const response = await API.get(`/api/history-numbers/${type}`)
+            const nextData = Array.isArray(response.data) ? response.data : []
+
+            writeCache(type, nextData)
+
+            if (!background && !ignore) {
+              setData(nextData)
+              setIsInitialLoad(false)
+            }
             return
           } catch (requestError) {
             lastError = requestError
@@ -85,14 +132,30 @@ const HistoryNumbers = () => {
         throw lastError || new Error("History numbers request failed")
       } catch (error) {
         console.error("Error fetching data:", error)
-        setData([])
-        setError("Failed to fetch data. Please try again later.")
+        if (!background && !ignore) {
+          if (!hasCachedData) {
+            setData([])
+          }
+          setError(hasCachedData ? null : "Failed to fetch data. Please try again later.")
+        }
       } finally {
-        setLoading(false)
+        if (!background && !ignore) {
+          setLoading(false)
+        }
       }
     }
 
-    fetchData()
+    fetchData(lotteryType)
+
+    const otherType = lotteryType === "MegaMillion" ? "PowerBall" : "MegaMillion"
+    const cachedOtherData = readCache()[otherType]
+    if (!Array.isArray(cachedOtherData) || cachedOtherData.length === 0) {
+      fetchData(otherType, { background: true })
+    }
+
+    return () => {
+      ignore = true
+    }
   }, [lotteryType])
 
   const indexOfLastItem = currentPage * itemsPerPage
@@ -122,15 +185,26 @@ const HistoryNumbers = () => {
     setCurrentPage(1)
   }
 
-  if (loading) {
-    return <div className="loading">Loading...</div>
+  const { headers, fields } = tableConfig[lotteryType]
+  const isPowerBall = lotteryType === "PowerBall"
+  const showLoadingOverlay = loading
+  const showEmptyState = !loading && !error && currentData.length === 0
+
+  if (loading && isInitialLoad && data.length === 0) {
+    return (
+      <div className="history-numbers history-numbers-loading-view">
+        <div className="history-loading-card">
+          <div className="history-loading-spinner" />
+          <h2>{isPowerBall ? "Loading Power Ball history..." : "Loading Mega Million history..."}</h2>
+          <p>{isPowerBall ? "Power Ball data usually takes a bit longer. Please wait..." : "Preparing the latest draw history..."}</p>
+        </div>
+      </div>
+    )
   }
 
   if (error) {
     return <div className="error">{error}</div>
   }
-
-  const { headers, fields } = tableConfig[lotteryType]
 
   return (
     <div className="history-numbers">
@@ -152,6 +226,18 @@ const HistoryNumbers = () => {
           Power Ball
         </button>
       </div>
+      <div className={`history-table-shell ${showLoadingOverlay ? "is-loading" : ""}`}>
+        {showLoadingOverlay && (
+          <div className="history-loading-overlay" aria-live="polite">
+            <div className="history-loading-spinner" />
+            <div className="history-loading-copy">
+              <strong>{isPowerBall ? "Loading Power Ball history" : "Refreshing history numbers"}</strong>
+              <span>
+                {isPowerBall ? "Power Ball requests can take a little longer, but the page is still working." : "Fetching the latest results..."}
+              </span>
+            </div>
+          </div>
+        )}
       <div className="history-table-wrapper">
         <table className="history-table">
           <thead>
@@ -172,6 +258,8 @@ const HistoryNumbers = () => {
           </tbody>
         </table>
       </div>
+      </div>
+      {showEmptyState && <div className="history-empty-state">No history data available right now.</div>}
       <div className="pagination">
         <button className="page-button" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
           Previous
